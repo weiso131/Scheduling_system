@@ -48,6 +48,8 @@ class schedual_format():
         for j in range(self.period):
             self.manpower_in_days[day][j] = manpower
 
+    
+
 class human():
     def __init__(self, name : str, format : schedual_format):
         self.name = name
@@ -71,6 +73,15 @@ class human():
         for j in periods:
             self.format.manpower_in_days[day][j] = 0
             self.state[day][j] = ["X"]
+
+    def print_state(self):
+        for i in range(self.format.day_nums):
+            print(self.state[i], end=" ")
+            if (i + self.format.start_day) % 7 == 0:
+                print()
+        print()
+        
+            
     
 
 class department(human):
@@ -96,9 +107,13 @@ class department(human):
     
 class employee(human):
 
-    def __init__(self, name : str, format : schedual_format, hate_departments=[]):
+    def __init__(self, name : str, format : schedual_format, hate_period=[]):
+        """
+        hate_period : [("department_name", day, periods)]
+        """
         super().__init__(name, format)
-        self.hate_departments = hate_departments
+        self.hate_period = hate_period
+
     
 
 class schedual():
@@ -107,6 +122,17 @@ class schedual():
         self.departments = departments
         self.employees = employees
         self.format = format
+
+    def employee_avalible(self, department_index : int, employee_index : int, day : int, period : int):
+        department_need = self.departments[department_index].format.manpower_in_days[day][period] > 0 
+        employee_avalible = self.employees[employee_index].format.manpower_in_days[day][period] > 0
+
+        for hate_name, hate_day, hate_period in self.employees[employee_index].hate_period:
+            is_hate_period = (day + self.format.start_day) % 7 == hate_day and period == hate_period and\
+                             hate_name == self.departments[department_index].name
+            employee_avalible = employee_avalible and (not is_hate_period)
+
+        return department_need and employee_avalible
 
     def schedual_fill(self, department_index : int, employee_index : int, day : int, period : int):
         man_fill_pos = len(self.departments[department_index].state[day][period]) - \
@@ -129,8 +155,7 @@ class schedual():
 
                 
                 for period in range(self.format.period):
-                    if self.departments[department_index].format.manpower_in_days[day][period] > 0 and \
-                        self.employees[i].format.manpower_in_days[day][period] > 0:
+                    if self.employee_avalible(department_index, i, day, period):
                             self.schedual_fill(department_index, i, day, period)
 
                 
