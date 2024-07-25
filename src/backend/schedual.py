@@ -36,10 +36,10 @@ class schedual_format():
             return True
         return False
 
-    def set_manpower_in_week(self, week_day : int, manpower : int):
+    def set_manpower_in_week(self, week_day : int, manpower : int, period : list):
             
         for i in range((week_day - self.start_day + 7) % 7, self.day_nums, 7):
-            for j in range(self.period):
+            for j in period:
                 self.manpower_in_days[i][j] = manpower
     
     def set_manpower_day(self, day : int, manpower : int):
@@ -76,7 +76,7 @@ class human():
 
     def print_state(self):
         for i in range(self.format.day_nums):
-            print(self.state[i], end=" ")
+            print(i + 1, self.state[i], end="/ /")
             if (i + self.format.start_day) % 7 == 0:
                 print()
         print()
@@ -107,14 +107,19 @@ class department(human):
     
 class employee(human):
 
-    def __init__(self, name : str, format : schedual_format, hate_period=[], bind_period=[]):
+    def __init__(self, name : str, start_department : str, format : schedual_format, hate_period=[], bind_period=[]):
         """
         hate_period : [("department_name", day, [periods, ])]
         bind_period : [("department_name", day, [periods, ])]
         """
         super().__init__(name, format)
+        self.start_department = start_department
         self.hate_period = hate_period
         self.bind_period = bind_period
+
+    def schedual_fill(self, department_name : str, day : int, period : int):
+        self.state[day][period] = [department_name]
+        self.format.manpower_in_days[day][period] -= 1
 
     
 
@@ -143,10 +148,8 @@ class schedual():
             int(self.departments[department_index].format.manpower_in_days[day][period])
 
         self.departments[department_index].state[day][period][man_fill_pos] = self.employees[employee_index].name
-        self.employees[employee_index].state[day][period] = [self.departments[department_index].name]
-
         self.departments[department_index].format.manpower_in_days[day][period] -= 1
-        self.employees[employee_index].format.manpower_in_days[day][period] -= 1
+        self.employees[employee_index].schedual_fill(self.departments[department_index].name, day, period)
 
     
     def get_department_index(self, department_name : str):
@@ -163,20 +166,24 @@ class schedual():
             for bind_name, bind_day, bind_periods in self.employees[i].bind_period:
                 department_index = self.get_department_index(bind_name)
                 
-                if department_index != -1:
-                    for day in range((bind_day - self.format.start_day + 7) % 7, self.format.day_nums, 7):
-                        for period in bind_periods:
-                            if self.employee_avalible(department_index, i, day, period):
-                                self.schedual_fill(department_index, i, day, period)
+                
+                for day in range((bind_day - self.format.start_day + 7) % 7, self.format.day_nums, 7):
+                    for period in bind_periods:
+                        e_avalible = self.employee_avalible(department_index, i, day, period)
+                        if e_avalible and department_index != -1:
+                            self.schedual_fill(department_index, i, day, period)
+                        elif e_avalible and department_index == -1:
+                            self.employees[i].schedual_fill(bind_name, day, period)
+
             
 
-    def basic_schedual(self):
+    def basic_schedual(self, last_month=0):
         for i in range(len(self.employees)):
             
-            department_index = i % len(self.departments)
+            department_index = self.get_department_index(self.employees[i].start_department)
 
             for day in range(self.format.day_nums):
-                if (day + self.format.start_day) % 14 == 0:
+                if (day + self.format.start_day + last_month * 7) % 14 == 0:
                     department_index = (department_index + 1) % len(self.departments)
 
                 
@@ -191,6 +198,6 @@ class schedual():
                 
 
 
-
+#接續上個月/上次的診間
 
 
