@@ -107,12 +107,14 @@ class department(human):
     
 class employee(human):
 
-    def __init__(self, name : str, format : schedual_format, hate_period=[]):
+    def __init__(self, name : str, format : schedual_format, hate_period=[], bind_period=[]):
         """
-        hate_period : [("department_name", day, periods)]
+        hate_period : [("department_name", day, [periods, ])]
+        bind_period : [("department_name", day, [periods, ])]
         """
         super().__init__(name, format)
         self.hate_period = hate_period
+        self.bind_period = bind_period
 
     
 
@@ -127,9 +129,11 @@ class schedual():
         department_need = self.departments[department_index].format.manpower_in_days[day][period] > 0 
         employee_avalible = self.employees[employee_index].format.manpower_in_days[day][period] > 0
 
-        for hate_name, hate_day, hate_period in self.employees[employee_index].hate_period:
-            is_hate_period = (day + self.format.start_day) % 7 == hate_day and period == hate_period and\
-                             hate_name == self.departments[department_index].name
+        # Check if the employee hates the department on the given day and period.
+        for hate_name, hate_day, hate_periods in self.employees[employee_index].hate_period:
+            is_hate_period = hate_name == self.departments[department_index].name and\
+                (day + self.format.start_day) % 7 == hate_day and period in hate_periods 
+                             
             employee_avalible = employee_avalible and (not is_hate_period)
 
         return department_need and employee_avalible
@@ -143,6 +147,28 @@ class schedual():
 
         self.departments[department_index].format.manpower_in_days[day][period] -= 1
         self.employees[employee_index].format.manpower_in_days[day][period] -= 1
+
+    
+    def get_department_index(self, department_name : str):
+        for i in range(len(self.departments)):
+            if self.departments[i].name == department_name:
+                return i
+        return -1
+
+    def bind_schedual(self):
+        for i in range(len(self.employees)):
+            if len(self.employees[i].bind_period) == 0:
+                continue
+            
+            for bind_name, bind_day, bind_periods in self.employees[i].bind_period:
+                department_index = self.get_department_index(bind_name)
+                
+                if department_index != -1:
+                    for day in range((bind_day - self.format.start_day + 7) % 7, self.format.day_nums, 7):
+                        for period in bind_periods:
+                            if self.employee_avalible(department_index, i, day, period):
+                                self.schedual_fill(department_index, i, day, period)
+            
 
     def basic_schedual(self):
         for i in range(len(self.employees)):
