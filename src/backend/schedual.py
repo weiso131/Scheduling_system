@@ -1,5 +1,9 @@
-import numpy as np
 import copy
+
+import numpy as np
+import pandas as pd
+
+
 class schedual_format():
     def __init__(self, day_nums : int, period : int, start_day : int, period_name=[]):
         """
@@ -121,6 +125,13 @@ class employee(human):
         self.state[day][period] = [department_name]
         self.format.manpower_in_days[day][period] -= 1
 
+    def schedual_one_day_output(self, day : int):
+        employee_work = ""
+        for p in range(self.format.period):
+            employee_work += self.state[day][p][0]
+            if p != self.format.period - 1:
+                employee_work += " "
+        return employee_work
     
 
 class schedual():
@@ -172,6 +183,7 @@ class schedual():
                         e_avalible = self.employee_avalible(department_index, i, day, period)
                         if e_avalible and department_index != -1:
                             self.schedual_fill(department_index, i, day, period)
+                        #consider employee will go to the department not need to arrange schedule
                         elif e_avalible and department_index == -1:
                             self.employees[i].schedual_fill(bind_name, day, period)
 
@@ -191,13 +203,26 @@ class schedual():
                     if self.employee_avalible(department_index, i, day, period):
                             self.schedual_fill(department_index, i, day, period)
 
+    def to_excel(self):
+        week_day_chinese = ["日", "一", "二", "三", "四", "五", "六"]
+        data = {}
+        for day in range(self.format.day_nums):
+            data[str(day + 1)] = [week_day_chinese[(day + self.format.start_day + 7) % 7]]
+            for e in self.employees:
+                data[str(day + 1)].append(e.schedual_one_day_output(day))
+        df = pd.DataFrame(data)
+        custom_index = ["星期"]
+        for e in self.employees:
+            custom_index.append(e.name)
+        df.index = custom_index
+        df.to_excel("schedual.xlsx", index=True)
                 
 
 
+
                 
                 
 
 
-#接續上個月/上次的診間
 
 
