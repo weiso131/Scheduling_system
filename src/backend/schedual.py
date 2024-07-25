@@ -48,12 +48,10 @@ class schedual_format():
         for j in range(self.period):
             self.manpower_in_days[day][j] = manpower
 
-
-
-class department():
+class human():
     def __init__(self, name : str, format : schedual_format):
         self.name = name
-        self.format = copy.copy(format)
+        self.format = copy.deepcopy(format)
         self.state = []
 
         for i in range(self.format.day_nums):
@@ -63,21 +61,21 @@ class department():
                     self.state[i].append(["X"])
                 else:
                     self.state[i].append([" "])
-
-    def fill_schedule(self, employee_name : str, day : int, periods : list):
+    def set_rest(self, day : int, periods : list):
         """
-        put the name of the employee to the schedule
+        set the period don't need any manpower
         """
         if self.format.check_period(periods) or self.format.check_day(day):
             return
         
         for j in periods:
-            fill_index = len(self.state[day][j]) - int(self.format.manpower_in_days[day][j])
-            if fill_index < 0:
-                continue
+            self.format.manpower_in_days[day][j] = 0
+            self.state[day][j] = ["X"]
+    
 
-            self.state[day][j][fill_index] = employee_name
-            self.format.manpower_in_days[day][j] -= 1
+class department(human):
+    def __init__(self, name : str, format : schedual_format):
+        super().__init__(name, format)
     
     def change_manpower(self, day : int, periods : list, manpower : int):
         """"
@@ -92,31 +90,16 @@ class department():
                 self.state[day][j].append(" ")
             while len(self.state[day][j]) > int(self.format.manpower_in_days[day][j]): 
                 self.state[day][j].pop()
-
-    def set_rest(self, day : int, periods : list):
-        """
-        set the period don't need any manpower
-        """
-        if self.format.check_period(periods) or self.format.check_day(day):
-            return
-        
-        for j in periods:
-            self.format.manpower_in_days[day][j] = 0
-            self.state[day][j] = ["X"]
-
-
-        
-
-
-
+    def set_rest_week(self, week_day : int, periods : list):
+        for i in range((week_day - self.format.start_day + 7) % 7, self.format.day_nums, 7):
+            self.set_rest(i, periods)
     
+class employee(human):
 
-class employee():
-
-    def __init__(self, name : str, format : schedual_format):
-        self.name = name
-        self.format = copy.copy(format)
-
+    def __init__(self, name : str, format : schedual_format, hate_departments=[]):
+        super().__init__(name, format)
+        self.hate_departments = hate_departments
+    
 
 class schedual():
 
@@ -125,7 +108,36 @@ class schedual():
         self.employees = employees
         self.format = format
 
-    
+    def schedual_fill(self, department_index : int, employee_index : int, day : int, period : int):
+        man_fill_pos = len(self.departments[department_index].state[day][period]) - \
+            int(self.departments[department_index].format.manpower_in_days[day][period])
+
+        self.departments[department_index].state[day][period][man_fill_pos] = self.employees[employee_index].name
+        self.employees[employee_index].state[day][period] = [self.departments[department_index].name]
+
+        self.departments[department_index].format.manpower_in_days[day][period] -= 1
+        self.employees[employee_index].format.manpower_in_days[day][period] -= 1
+
+    def basic_schedual(self):
+        for i in range(len(self.employees)):
+            
+            department_index = i % len(self.departments)
+
+            for day in range(self.format.day_nums):
+                if (day + self.format.start_day) % 14 == 0:
+                    department_index = (department_index + 1) % len(self.departments)
+
+                
+                for period in range(self.format.period):
+                    if self.departments[department_index].format.manpower_in_days[day][period] > 0 and \
+                        self.employees[i].format.manpower_in_days[day][period] > 0:
+                            self.schedual_fill(department_index, i, day, period)
+
+                
+
+
+                
+                
 
 
 
