@@ -36,20 +36,16 @@ class schedual_format():
             return True
         return False
 
-    def set_manpower_in_week(self, week_day : int, periods : list, manpower : int):
-        if self.check_period(periods):
-            return
+    def set_manpower_in_week(self, week_day : int, manpower : int):
             
         for i in range((week_day - self.start_day + 7) % 7, self.day_nums, 7):
-            for j in periods:
+            for j in range(self.period):
                 self.manpower_in_days[i][j] = manpower
     
-    def set_manpower_day(self, day : int, periods : list, manpower : int):
-        if self.check_period(periods):
-            return
+    def set_manpower_day(self, day : int, manpower : int):
         if self.check_day(day):
             return
-        for j in periods:
+        for j in range(self.period):
             self.manpower_in_days[day][j] = manpower
 
 
@@ -69,6 +65,9 @@ class department():
                     self.state[i].append([" "])
 
     def fill_schedule(self, employee_name : str, day : int, periods : list):
+        """
+        put the name of the employee to the schedule
+        """
         if self.format.check_period(periods) or self.format.check_day(day):
             return
         
@@ -79,6 +78,32 @@ class department():
 
             self.state[day][j][fill_index] = employee_name
             self.format.manpower_in_days[day][j] -= 1
+    
+    def change_manpower(self, day : int, periods : list, manpower : int):
+        """"
+        change the need of the manpower on the periods
+        """
+        if self.format.check_period(periods) or self.format.check_day(day):
+            return
+        
+        for j in periods:
+            self.format.manpower_in_days[day][j] = manpower
+            while len(self.state[day][j]) < int(self.format.manpower_in_days[day][j]): 
+                self.state[day][j].append(" ")
+            while len(self.state[day][j]) > int(self.format.manpower_in_days[day][j]): 
+                self.state[day][j].pop()
+
+    def set_rest(self, day : int, periods : list):
+        """
+        set the period don't need any manpower
+        """
+        if self.format.check_period(periods) or self.format.check_day(day):
+            return
+        
+        for j in periods:
+            self.format.manpower_in_days[day][j] = 0
+            self.state[day][j] = ["X"]
+
 
         
 
