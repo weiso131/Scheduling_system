@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>輸入表格</title>
+</head>
+<body>
+    <h1>輸入表格</h1>
+
+    <form action="{{ url_for('add_employee') }}" method="POST">
+        <table>
+            <tbody>
+                <tr>
+                    <td><label for="name">姓名:</label></td>
+                    <td><input type="text" id="name" name="name" required></td>
+                </tr>
+                <tr>
+                    <td><label for="last_working_room">上次上班的診間:</label></td>
+                    <td><input type="text" id="last_working_room" name="last_working_room" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><button type="submit">提交</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+</body>
+</html>

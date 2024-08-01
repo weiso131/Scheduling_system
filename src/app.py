@@ -40,6 +40,31 @@ def delete(target_class, id):
         my_schedual.departments.pop(id)
         return redirect(url_for('show_departments_status'))
     
+@app.route('/add_employee', methods=['GET', 'POST'])
+def add_employee():
+    if request.method == 'GET':
+        return render_template('employee_form.html')
+    else:
+        name = request.form['name']
+        last_room = request.form['last_working_room']
+        my_schedual.employees.append(Employee(name, last_room, format))
+        return redirect(url_for('show_employees_status'))
+
+
+
+@app.route('/add_department', methods=['GET', 'POST'])
+def add_department():
+    if request.method == 'GET':
+        return render_template('department_form.html')
+    else:
+        name = request.form['name']
+        my_schedual.departments.append(Department(name, format))
+        return redirect(url_for('show_departments_status'))
+
+@app.route('/build_schedule')
+def build_schedule():
+    return "meow"
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
