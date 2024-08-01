@@ -12,15 +12,20 @@ class ScheduleContainer():
         employee_avalible = self.employees[employee_index].check_avaliable(day, period, self.departments[department_index])
         return department_need and employee_avalible
     def schedual_fill(self, department_index : int, employee_index : int, day : int, period : int):
-        man_fill_pos = len(self.departments[department_index].state[day][period]) - \
-            int(self.departments[department_index].format.manpower_in_days[day][period])
-        self.departments[department_index].schedual_fill(self.employees[employee_index].name, day, period, man_fill_pos)
+        
+        self.departments[department_index].schedual_fill(self.employees[employee_index].name, day, period)
         self.employees[employee_index].schedual_fill(self.departments[department_index].name, day, period)
     def get_department_index(self, department_name : str):
         for i in range(len(self.departments)):
             if self.departments[i].name == department_name:
                 return i
         return -1
+    def reload(self):
+        for department in self.departments:
+            department.reload()
+        for employee in self.employees:
+            employee.reload()
+    
     def bind_schedual(self):
         for i in range(len(self.employees)):
             if len(self.employees[i].bind_period) == 0:
