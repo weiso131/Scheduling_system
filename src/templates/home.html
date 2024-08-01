@@ -7,24 +7,43 @@
 </head>
 <body>
     <h1>排班系統</h1>
-    <h2>
-        <a href="{{ url_for('show_employees_status') }}">員工</a>
-        <a href="{{ url_for('show_departments_status') }}">部門</a>
-    </h2>
+    <h3>診間</h3>
     <table>
         <thead>
             <tr>
-                <th>姓名</th>
+                <th>診間名稱</th>
                 <th>操作</th>
             </tr>
         </thead>
         <tbody>
-            {% for person in data %}
+            {% for department in departments %}
             <tr>
-                <td>{{ person.name }}</td>
+                <td>{{ department.name }}</td>
                 <td class="transaction-actions">
-                    <a href="{{ url_for('edit', target_class=target_class, id=person.id) }}">Edit</a>
-                    <a href="{{ url_for('delete', target_class=target_class, id=person.id) }}">Delete</a>
+                    <a href="{{ url_for('edit', target_class=0, id=department.id) }}">Edit</a>
+                    <a href="{{ url_for('delete', target_class=0, id=department.id) }}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3>員工</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>起始診間</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr>
+                <td>{{ employee.name }}</td>
+                <td>{{ employee.last_room }}</td>
+                <td class="transaction-actions">
+                    <a href="{{ url_for('edit', target_class=1, id=employee.id) }}">Edit</a>
+                    <a href="{{ url_for('delete', target_class=1, id=employee.id) }}">Delete</a>
                 </td>
             </tr>
             {% endfor %}

@@ -30,10 +30,13 @@ class ScheduleContainer():
         for i in range(len(self.departments)):
             json.append({"name": self.departments[i].name, "id" : i})
         return json
-    def get_employee_json(self):
+    def get_employee_json(self, use_state=False):
         json = []
         for i in range(len(self.employees)):
-            json.append({"name": self.employees[i].name, "id" : i})
+            json.append({"name": self.employees[i].name, "id" : i, \
+                         "last_room" : self.employees[i].start_department})
+            if use_state:
+                json[i]["state"] = self.employees[i].state
         return json
     def bind_schedual(self):
         for i in range(len(self.employees)):

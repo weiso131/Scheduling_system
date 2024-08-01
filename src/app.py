@@ -19,13 +19,11 @@ app = Flask(__name__)
 def home():
     return redirect(url_for('show_employees_status'))
 
-@app.route('/employees')
-def show_employees_status():
-    return render_template('home.html', data=my_schedual.get_employee_json(), target_class=EMPLOYEE)
+@app.route('/show_status')
+def show_status():
+    return render_template('home.html', employees=my_schedual.get_employee_json(), \
+                           departments=my_schedual.get_department_json(), target_class=EMPLOYEE)
 
-@app.route('/departments')
-def show_departments_status():
-    return render_template('home.html', data=my_schedual.get_department_json(), target_class=DEPARTMNT)
 
 @app.route('/edit/<int:target_class>/<int:id>')
 def edit(target_class, id):
@@ -35,10 +33,10 @@ def edit(target_class, id):
 def delete(target_class, id):
     if target_class == EMPLOYEE:
         my_schedual.employees.pop(id)
-        return redirect(url_for('show_employees_status'))
+        return redirect(url_for('show_status'))
     else:
         my_schedual.departments.pop(id)
-        return redirect(url_for('show_departments_status'))
+        return redirect(url_for('show_status'))
     
 @app.route('/add_employee', methods=['GET', 'POST'])
 def add_employee():
@@ -48,7 +46,7 @@ def add_employee():
         name = request.form['name']
         last_room = request.form['last_working_room']
         my_schedual.employees.append(Employee(name, last_room, format))
-        return redirect(url_for('show_employees_status'))
+        return redirect(url_for('show_status'))
 
 
 
@@ -59,7 +57,7 @@ def add_department():
     else:
         name = request.form['name']
         my_schedual.departments.append(Department(name, format))
-        return redirect(url_for('show_departments_status'))
+        return redirect(url_for('show_status'))
 
 @app.route('/build_schedule')
 def build_schedule():
