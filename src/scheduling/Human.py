@@ -21,7 +21,7 @@ class Human():
                 if self.format.manpower_in_days[i][j] == 0:
                     self.state[i].append(["X"])
                 else:
-                    self.state[i].append([" "])
+                    self.state[i].append(["_"])
         
     def set_rest(self, day : int, periods : list):
         """

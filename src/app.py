@@ -63,7 +63,10 @@ def add_department():
 
 @app.route('/build_schedule')
 def build_schedule():
-    return "meow"
+    my_schedual.reload()
+    my_schedual.bind_schedual()
+    my_schedual.basic_schedual(last_month=1)
+    return render_template("show_schedule.html", days=list(range(1, format.day_nums + 1)), employees=my_schedual.get_employee_json(use_state=True))
     
 
 if __name__ == '__main__':
