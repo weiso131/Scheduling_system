@@ -25,7 +25,16 @@ class ScheduleContainer():
             department.reload()
         for employee in self.employees:
             employee.reload()
-    
+    def get_department_json(self):
+        json = []
+        for i in range(len(self.departments)):
+            json.append({"name": self.departments[i].name, "id" : i})
+        return json
+    def get_employee_json(self):
+        json = []
+        for i in range(len(self.employees)):
+            json.append({"name": self.employees[i].name, "id" : i})
+        return json
     def bind_schedual(self):
         for i in range(len(self.employees)):
             if len(self.employees[i].bind_period) == 0:
