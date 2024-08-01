@@ -13,7 +13,7 @@
             <tr>
                 <th>_____</th>
                 {% for day in days %}
-                <th>{{ day }}</th>
+                <th>{{month}}/{{ day }}</th>
                 {% endfor %}
             </tr>
         </thead>
@@ -22,7 +22,7 @@
             <tr>
                 <td>{{ employee.name }}</td>
                 {% for day in employee.state %}
-                <td>{{ day }}</td>
+                <td>上午:{{ day[0][0] }}, 下午:{{ day[1][0] }}</td>
                 {% endfor %}
             </tr>
             {% endfor %}

@@ -4,6 +4,7 @@ from scheduling import *
 DEPARTMNT = 0
 EMPLOYEE = 1
 
+month = 7
 
 format = SchedualFormat(day_nums=31, period=2, start_day=1)
 format.set_manpower_in_week(week_day=6, manpower=0, period=[1])
@@ -64,7 +65,7 @@ def build_schedule():
     my_schedual.reload()
     my_schedual.bind_schedual()
     my_schedual.basic_schedual(last_month=1)
-    return render_template("show_schedule.html", days=list(range(1, format.day_nums + 1)), employees=my_schedual.get_employee_json(use_state=True))
+    return render_template("show_schedule.html", month=month, days=list(range(1, format.day_nums + 1)), employees=my_schedual.get_employee_json(use_state=True))
     
 
 if __name__ == '__main__':
