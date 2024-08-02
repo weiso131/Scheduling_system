@@ -12,6 +12,7 @@ EMPLOYEE = 1
 
 year = -1
 month = 7
+last_month = 0 #是否接續上個月
 
 format = None
 my_schedual = None
@@ -37,6 +38,8 @@ def home():
         format.set_manpower_in_week(week_day=7, manpower=0, period=[0, 1])
 
         my_schedual = ScheduleContainer(format)
+        my_schedual.departments = [Department("82", format), Department("83", format), Department("84", format)]
+        my_schedual.employees = [Employee("A", "82", format), Employee("B", "83", format), Employee("C", "84", format)]
 
         return redirect(url_for('show_status'))
 
@@ -109,14 +112,19 @@ def add_department():
 
 @app.route('/build_schedule')
 def build_schedule():
+    global last_month
+    last_month = (last_month + 1) % 2   
     if my_schedual == None:
         return redirect(url_for('home'))
     my_schedual.reload()
     my_schedual.bind_schedual()
-    my_schedual.basic_schedual(last_month=1)
-    return render_template("show_schedule.html", month=month, days=list(range(1, format.day_nums + 1)), \
+    my_schedual.basic_schedual(last_month=last_month)
+    return render_template("show_schedule.html", month=month, days=format.week_day_of_month(), \
                            employees=my_schedual.get_employee_json(use_state=True), title=f"{year}年 {month}月 班表")
-    
+
+@app.route('/to_excel')
+def to_excel():
+    return "meow"
 
 if __name__ == '__main__':
     app.run(debug=True)

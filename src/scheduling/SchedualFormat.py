@@ -46,4 +46,11 @@ class SchedualFormat():
             return
         for j in range(self.period):
             self.manpower_in_days[day][j] = manpower
+    def week_day_of_month(self):
+        week = ['(日)', '(一)', '(二)', '(三)', '(四)', '(五)', '(六)']
+        output = []
+        for i in range(self.day_nums):
+            output.append(f"{str(i + 1)} {week[(i + self.start_day + 7) % 7]}")
+        
+        return output
 
