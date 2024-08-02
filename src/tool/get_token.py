@@ -38,19 +38,14 @@ def get_personal_leave(tokens : str):
         if len(token) == 0:
             continue
         periods = token.split('~')
-        if len(periods) < 2:
-            return "少了 \'~\'"
-        elif len(periods) > 2:
-            return "多了 \'~\'"
+        if len(periods) != 2:
+            return ""
         
-
         start = scanf(periods[0], 'd/p')
         end = scanf(periods[1], 'd/p')
 
-        if type(start) is not tuple:
-            return start
-        if type(end) is not tuple:
-            return end
+        if type(start) is not tuple or type(end) is not tuple:
+            return ""
         
         output.append(start + end)
         
