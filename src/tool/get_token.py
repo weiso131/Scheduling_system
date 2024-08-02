@@ -12,7 +12,12 @@ def scanf(token : str, target : str):
             output.append(token_list[i])
         elif target_list[i] == 'd':
             try:
-                output.append(int(token_list[i]))
+                output.append(int(token_list[i]) - 1) #電腦是從0開始的
+            except ValueError:
+                return f"{token_list[i]}無效的日子"
+        elif target_list[i] == 'w': #星期幾
+            try:
+                output.append((int(token_list[i]) + 7) % 7)
             except ValueError:
                 return f"{token_list[i]}無效的日子"
         elif target_list[i] == 'p':
@@ -61,7 +66,7 @@ def get_period(tokens : str):
     for token in token_list:
         if len(token) == 0:
             continue
-        period = scanf(token, 's/d/p')
+        period = scanf(token, 's/w/p')
         if type(period) is not tuple:
             return period
         

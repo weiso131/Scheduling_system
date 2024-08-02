@@ -37,6 +37,7 @@
                 <tr>
                     <th>姓名</th>
                     <th>起始診間</th>
+                    <th>備註</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -45,6 +46,7 @@
                 <tr>
                     <td>{{ employee.name }}</td>
                     <td>{{ employee.last_room }}</td>
+                    <td>{{ employee.remark }}</td>
                     <td class="transaction-actions">
                         <a href="{{ url_for('edit', target_class=1, id=employee.id) }}" class="button">Edit</a>
                         <a href="{{ url_for('delete', target_class=1, id=employee.id) }}" class="button">Delete</a>

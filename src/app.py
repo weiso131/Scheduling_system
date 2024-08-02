@@ -32,7 +32,7 @@ def home():
         start_day = (specific_day.weekday() + 1 ) % 7
         day_nums = calendar.monthrange(year, month)[1]
         
-        format = SchedualFormat(day_nums=day_nums, period=2, start_day=start_day)
+        format = SchedualFormat(day_nums=day_nums, period=2, start_day=start_day, period_name=["上午", "下午"])
         format.set_manpower_in_week(week_day=6, manpower=0, period=[1])
         format.set_manpower_in_week(week_day=7, manpower=0, period=[0, 1])
 

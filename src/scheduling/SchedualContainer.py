@@ -34,6 +34,7 @@ class ScheduleContainer():
         json = []
         for i in range(len(self.employees)):
             json.append({"name": self.employees[i].name, "id" : i, \
+                         "remark" : self.employees[i].get_remark(), \
                          "last_room" : self.employees[i].start_department})
             if use_state:
                 json[i]["state"] = self.employees[i].state
