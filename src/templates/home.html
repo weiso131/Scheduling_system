@@ -4,27 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>輸入年月</title>
+    <link rel="stylesheet" href="static/home.css">
 </head>
 <body>
-    <h1>輸入年月</h1>
-
-    <form action="{{ url_for('home') }}" method="POST">
-        <table>
-            <tbody>
-                <tr>
-                    <td><label for="year">年分:</label></td>
-                    <td><input type="text" id="year" name="year" value="{{default_data['year']}}" required></td>
-                </tr>
-                <tr>
-                    <td><label for="month">月份:</label></td>
-                    <td><input type="text" id="month" name="month" value="{{default_data['month']}}" required></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><button type="submit">提交</button></td>
-                </tr>
-            </tbody>
-        </table>
-    </form>
-
+    <div class="container">
+        <h1>輸入年月</h1>
+        <form action="{{ url_for('home') }}" method="POST" class="form">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td><label for="year" class="label">年分:</label></td>
+                        <td><input type="text" id="year" name="year" value="{{default_data['year']}}" class="input" required></td>
+                    </tr>
+                    <tr>
+                        <td><label for="month" class="label">月份:</label></td>
+                        <td><input type="text" id="month" name="month" value="{{default_data['month']}}" class="input" required></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><button type="submit" class="button">提交</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
 </body>
 </html>
