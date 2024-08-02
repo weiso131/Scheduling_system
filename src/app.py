@@ -1,7 +1,11 @@
 from datetime import datetime, date
+import calendar
 
-from flask import Flask, request, jsonify, redirect, url_for, render_template
+from flask import Flask, request, redirect, url_for, render_template
+
+
 from scheduling import *
+from tool import *
 
 DEPARTMNT = 0
 EMPLOYEE = 1
@@ -9,8 +13,9 @@ EMPLOYEE = 1
 year = -1
 month = 7
 start_day = 1
+day_nums = 31
 
-format = SchedualFormat(day_nums=31, period=2, start_day=start_day)
+format = SchedualFormat(day_nums=day_nums, period=2, start_day=start_day)
 format.set_manpower_in_week(week_day=6, manpower=0, period=[1])
 format.set_manpower_in_week(week_day=7, manpower=0, period=[0, 1])
 
@@ -22,7 +27,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    global year, month, start_day
+    global year, month, start_day, day_nums
     if request.method == 'GET':
         now = datetime.now()
         return render_template('home.html', \
@@ -33,7 +38,7 @@ def home():
 
         specific_day = date(year, month, 1)
         start_day = (specific_day.weekday() + 1 ) % 7
-
+        day_nums = calendar.monthrange(year, month)[1]
         
         return redirect(url_for('show_status'))
 
@@ -60,12 +65,24 @@ def delete(target_class, id):
     
 @app.route('/add_employee', methods=['GET', 'POST'])
 def add_employee():
+    global year, month, day_nums
     if request.method == 'GET':
-        return render_template('employee_form.html')
+        return render_template('employee_form.html', year=year, month=month, dates=list(range(1, day_nums + 1)))
     else:
         name = request.form['name']
         last_room = request.form['last_working_room']
-        my_schedual.employees.append(Employee(name, last_room, format))
+        hate_periods = get_period(request.form['hate_period'])
+        bind_periods = get_period(request.form['bind_period'])
+        personal_leave = get_personal_leave(request.form['personal_leave'])
+
+        if type(hate_periods) is str or type(bind_periods) is str or type(personal_leave) is str:
+            return render_template('employee_form.html', year=year, month=month, dates=list(range(1, day_nums + 1)))
+        
+        new_employee = Employee(name, last_room, format, bind_period=bind_periods, hate_period=hate_periods)
+        for pl in personal_leave:
+            new_employee.set_rest_period(pl)
+        my_schedual.employees.append(new_employee)
+
         return redirect(url_for('show_status'))
 
 

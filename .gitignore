@@ -163,3 +163,4 @@ cython_debug/
 
 src/test.py
 *.xlsx
+src/templates/test.html

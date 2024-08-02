@@ -3,7 +3,10 @@ def scanf(token : str, target : str):
     output = []
     token_list = token.split('/')
     target_list = target.split('/')
-    
+
+    if len(token_list) != len(target_list):
+        return "格式不符"
+
     for i in range(len(target_list)):
         if target_list[i] == 's':
             output.append(token_list[i])
@@ -49,7 +52,7 @@ def get_personal_leave(tokens : str):
         if type(end) is not tuple:
             return end
         
-        output.append({"start" : start, "end" : end})
+        output.append(start + end)
         
     
     return output
@@ -70,3 +73,7 @@ def get_period(tokens : str):
         output.append(period)
     return output
 
+# inputs = "09/上午~ 10/下午, 11/上午~ 12/下午, "
+# inputs1 = "87/1/上午, "
+# print(get_personal_leave(inputs))
+# print(get_period(inputs1))

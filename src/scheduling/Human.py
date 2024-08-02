@@ -94,3 +94,19 @@ class Employee(Human):
     def schedual_fill(self, fill_name : str, day : int, period : int):
         self.state[day][period][0] = fill_name
         self.format.manpower_in_days[day][period] -= 1
+    def set_rest_period(self, personal_leave : tuple):
+        start_day, start_period, end_day, end_period = personal_leave
+        for i in range(start_day, end_day + 1):
+
+            start, end = 0, self.format.period
+
+            if i == start_day:
+                start = start_period
+            elif i == end_day:
+                end = end_period
+
+            self.set_rest(i, list(range(start, end)))
+                    
+
+
+
