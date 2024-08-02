@@ -3,57 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>排班系統</title>
+    <title>輸入年月</title>
 </head>
 <body>
-    <h1>排班系統</h1>
-    <h3>診間</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>診間名稱</th>
-                <th>操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for department in departments %}
-            <tr>
-                <td>{{ department.name }}</td>
-                <td class="transaction-actions">
-                    <a href="{{ url_for('edit', target_class=0, id=department.id) }}">Edit</a>
-                    <a href="{{ url_for('delete', target_class=0, id=department.id) }}">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <h3>員工</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>姓名</th>
-                <th>起始診間</th>
-                <th>操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for employee in employees %}
-            <tr>
-                <td>{{ employee.name }}</td>
-                <td>{{ employee.last_room }}</td>
-                <td class="transaction-actions">
-                    <a href="{{ url_for('edit', target_class=1, id=employee.id) }}">Edit</a>
-                    <a href="{{ url_for('delete', target_class=1, id=employee.id) }}">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <h2>
-        <a href="{{ url_for('add_employee') }}">新增員工</a>
-        <a href="{{ url_for('add_department') }}">新增部門</a>
-        <a href="{{ url_for('build_schedule') }}">生成班表</a>
-    </h2>
-    
+    <h1>輸入年月</h1>
+
+    <form action="{{ url_for('home') }}" method="POST">
+        <table>
+            <tbody>
+                <tr>
+                    <td><label for="year">年分:</label></td>
+                    <td><input type="text" id="year" name="year" value="{{default_data['year']}}" required></td>
+                </tr>
+                <tr>
+                    <td><label for="month">月份:</label></td>
+                    <td><input type="text" id="month" name="month" value="{{default_data['month']}}" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><button type="submit">提交</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
 </body>
 </html>
