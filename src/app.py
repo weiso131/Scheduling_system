@@ -83,13 +83,19 @@ def edit(target_class, id):
                                    post_url=url_for('edit', target_class=target_class, id=id))
         else:
             my_schedual.employees[id] = set_employee_data(request.form)
-            return redirect(url_for('show_status')) 
+            
 
     else:
-        pass
+        if request.method == 'GET':
+            target = my_schedual.departments[id]
+            origin = {'name' : target.name,'man_power' : '','rest_time' : ''}
+            return render_template('department_form.html', title="編輯診間資訊", origin=origin, \
+                                   post_url=url_for('edit', target_class=target_class, id=id))
+        else:
+            pass
 
 
-    return "meow"
+    return redirect(url_for('show_status')) 
 
 @app.route('/delete/<int:target_class>/<int:id>')
 def delete(target_class, id):
@@ -125,10 +131,12 @@ def add_department():
         return redirect(url_for('home'))
     
     if request.method == 'GET':
-        return render_template('department_form.html')
+        origin = {'name' : '', 'man_power' : '', 'rest_time' : ''}
+        return render_template('department_form.html', origin=origin, title="新增診間")
     else:
         name = request.form['name']
-        my_schedual.departments.append(Department(name, format))
+        new_department = Department(name, format)
+        my_schedual.departments.append(new_department)
         return redirect(url_for('show_status'))
 
 @app.route('/build_schedule')

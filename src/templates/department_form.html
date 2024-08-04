@@ -3,24 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新增部門</title>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
 </head>
 <body>
-    <h1>新增部門</h1>
+    <div class="container">
+        <h1>{{ title }}</h1>
 
-    <form action="{{ url_for('add_department') }}" method="POST">
-        <table>
-            <tbody>
-                <tr>
-                    <td><label for="name">名稱:</label></td>
-                    <td><input type="text" id="name" name="name" required></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><button type="submit">提交</button></td>
-                </tr>
-            </tbody>
-        </table>
-    </form>
-
+        <form action="{{ post_url }}" method="POST" id="myForm">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><label for="name" class="label">名稱:</label></td>
+                        <td><input type="text" id="name" name="name" class="input" value="{{ origin['name'] }}" required></td>
+                    </tr>
+                    <tr>
+                        <td><label for="man_power" class="label">人力需求改變(禮拜幾/時段/人力):</label></td>
+                        <td><input type="text" id="man_power" name="man_power" placeholder="ex: 1/上午/2," class="input" value="{{ origin['man_power'] }}"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="rest_time" class="label">休診時間(禮拜幾/時段):</label></td>
+                        <td><input type="text" id="rest_time" name="rest_time" placeholder="ex: 1/上午," class="input" value="{{ origin['rest_time'] }}"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><button type="submit" class="button">提交</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+            const manPower = document.getElementById('man_power').value;
+            const restTime = document.getElementById('rest_time').value;
+            
+            const manPowerPattern = /^(\s*[0-7]\/(上午|下午)\/[0-9]*\s*)*(,\s*[0-7]\/(上午|下午)\/[0-9]*\s*)*$/;
+            const restTimePattern = /^(\s*[0-7]\/(上午|下午)\s*)*(,\s*[0-7]\/(上午|下午)\s*)*$/;
+            
+            if (!manPowerPattern.test(manPower)) {
+                alert('人力需求改變格式錯誤');
+                event.preventDefault();
+            }
+            if (!restTimePattern.test(restTime)) {
+                alert('休診格式錯誤');
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>

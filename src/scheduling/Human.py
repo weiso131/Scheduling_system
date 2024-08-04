@@ -83,7 +83,7 @@ class Employee(Human):
         self.personal_leave_input = self.__get_personal_leave()
 
         for pl in personal_leave:
-            self.set_rest_period(pl)
+            self.__set_rest_period(pl)
         
     def schedual_one_day_output(self, day : int):
         employee_work = ""
@@ -103,7 +103,7 @@ class Employee(Human):
     def schedual_fill(self, fill_name : str, day : int, period : int):
         self.state[day][period][0] = fill_name
         self.format.manpower_in_days[day][period] -= 1
-    def set_rest_period(self, personal_leave : tuple):
+    def __set_rest_period(self, personal_leave : tuple):
         start_day, start_period, end_day, end_period = personal_leave
         for i in range(start_day, end_day + 1):
 
