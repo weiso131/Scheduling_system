@@ -44,18 +44,17 @@ class ScheduleContainer():
             if len(self.employees[i].bind_period) == 0:
                 continue
             
-            for bind_name, bind_day, bind_periods in self.employees[i].bind_period:
+            for bind_name, bind_day, bind_period in self.employees[i].bind_period:
                 department_index = self.get_department_index(bind_name)
                 
                 
                 for day in range((bind_day - self.format.start_day + 7) % 7, self.format.day_nums, 7):
-                    for period in bind_periods:
-                        e_avalible = self.check_avalible(department_index, i, day, period)
-                        if e_avalible and department_index != -1:
-                            self.schedual_fill(department_index, i, day, period)
-                        #consider employee will go to the department not need to arrange schedule
-                        elif e_avalible and department_index == -1:
-                            self.employees[i].schedual_fill(bind_name, day, period)
+                    e_avalible = self.check_avalible(department_index, i, day, bind_period)
+                    if e_avalible and department_index != -1:
+                        self.schedual_fill(department_index, i, day, bind_period)
+                    #consider employee will go to the department not need to arrange schedule
+                    elif e_avalible and department_index == -1:
+                        self.employees[i].schedual_fill(bind_name, day, bind_period)
     def basic_schedual(self, last_month=0):
         for i in range(len(self.employees)):
             

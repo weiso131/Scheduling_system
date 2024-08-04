@@ -46,7 +46,11 @@
                 <tr>
                     <td>{{ employee.name }}</td>
                     <td>{{ employee.last_room }}</td>
-                    <td>{{ employee.remark }}</td>
+                    <td>
+                        {{ employee.remark.personal_leave }}<br>
+                        {{ employee.remark.hate_period }}<br>
+                        {{ employee.remark.bind_period }}
+                    </td>
                     <td class="transaction-actions">
                         <a href="{{ url_for('edit', target_class=1, id=employee.id) }}" class="button">Edit</a>
                         <a href="{{ url_for('delete', target_class=1, id=employee.id) }}" class="button">Delete</a>

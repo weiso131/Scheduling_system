@@ -19,6 +19,20 @@ my_schedual = None
 
 app = Flask(__name__)
 
+
+def set_employee_data(form : dict):
+    name = form['name']
+    last_room = form['last_working_room']
+    hate_periods = get_period(form['hate_period'])
+    bind_periods = get_period(form['bind_period'])
+    personal_leave = get_personal_leave(form['personal_leave'])
+
+    
+    new_employee = Employee(name, last_room, format, bind_period=bind_periods, \
+                            hate_period=hate_periods, personal_leave=personal_leave)
+        
+    return new_employee
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     global year, month, format, my_schedual
@@ -54,10 +68,27 @@ def show_status():
                            title=f"{year}年 {month}月 班表")
 
 
-@app.route('/edit/<int:target_class>/<int:id>')
+@app.route('/edit/<int:target_class>/<int:id>', methods=['GET', 'POST'])
 def edit(target_class, id):
     if my_schedual == None:
         return redirect(url_for('home'))
+    if target_class == EMPLOYEE:
+        if request.method == 'GET':
+            target = my_schedual.employees[id]
+            origin = {'name' : target.name, 'room' : target.start_department, \
+                      'hate_period' : target.hate_period_input, \
+                      'personal_leave' : target.personal_leave_input, \
+                        'bind_period' : target.bind_period_input}
+            return render_template('employee_form.html', title="編輯員工資訊", origin=origin, \
+                                   post_url=url_for('edit', target_class=target_class, id=id))
+        else:
+            my_schedual.employees[id] = set_employee_data(request.form)
+            return redirect(url_for('show_status')) 
+
+    else:
+        pass
+
+
     return "meow"
 
 @app.route('/delete/<int:target_class>/<int:id>')
@@ -66,10 +97,9 @@ def delete(target_class, id):
         return redirect(url_for('home'))
     if target_class == EMPLOYEE:
         my_schedual.employees.pop(id)
-        return redirect(url_for('show_status'))
     else:
         my_schedual.departments.pop(id)
-        return redirect(url_for('show_status'))
+    return redirect(url_for('show_status'))
     
 @app.route('/add_employee', methods=['GET', 'POST'])
 def add_employee():
@@ -78,20 +108,11 @@ def add_employee():
     
     global year, month
     if request.method == 'GET':
-        return render_template('employee_form.html', year=year, month=month, dates=list(range(1, format.day_nums + 1)))
+        origin = {'name' : '', 'room' : '', 'hate_period' : '', 'personal_leave' : '', 'bind_period' : ''}
+        return render_template('employee_form.html', title="新增員工", origin=origin, \
+                               post_url=url_for('add_employee'))
     else:
-        name = request.form['name']
-        last_room = request.form['last_working_room']
-        hate_periods = get_period(request.form['hate_period'])
-        bind_periods = get_period(request.form['bind_period'])
-        personal_leave = get_personal_leave(request.form['personal_leave'])
-
-        if type(hate_periods) is str or type(bind_periods) is str or type(personal_leave) is str:
-            return render_template('employee_form.html', year=year, month=month, dates=list(range(1, format.day_nums + 1)))
-        
-        new_employee = Employee(name, last_room, format, bind_period=bind_periods, hate_period=hate_periods)
-        for pl in personal_leave:
-            new_employee.set_rest_period(pl)
+        new_employee = set_employee_data(request.form)
         my_schedual.employees.append(new_employee)
 
         return redirect(url_for('show_status'))

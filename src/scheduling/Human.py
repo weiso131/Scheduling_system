@@ -67,7 +67,7 @@ class Department(Human):
         self.format.manpower_in_days[day][period] -= 1
     
 class Employee(Human):
-    def __init__(self, name : str, start_department : str, format : SchedualFormat, hate_period=[], bind_period=[]):
+    def __init__(self, name : str, start_department : str, format : SchedualFormat, hate_period=[], bind_period=[], personal_leave=[]):
         """
         hate_period : [("department_name", day, [periods, ])]
         bind_period : [("department_name", day, [periods, ])]
@@ -76,7 +76,15 @@ class Employee(Human):
         self.start_department = start_department
         self.hate_period = hate_period
         self.bind_period = bind_period
-        self.personal_leave = []
+        self.personal_leave = personal_leave
+
+        self.hate_period_input = self.__get_period(hate_period)
+        self.bind_period_input = self.__get_period(bind_period)
+        self.personal_leave_input = self.__get_personal_leave()
+
+        for pl in personal_leave:
+            self.set_rest_period(pl)
+        
     def schedual_one_day_output(self, day : int):
         employee_work = ""
         for p in range(self.format.period):
@@ -97,7 +105,6 @@ class Employee(Human):
         self.format.manpower_in_days[day][period] -= 1
     def set_rest_period(self, personal_leave : tuple):
         start_day, start_period, end_day, end_period = personal_leave
-        self.personal_leave.append(personal_leave)
         for i in range(start_day, end_day + 1):
 
             start, end = 0, self.format.period
@@ -109,26 +116,37 @@ class Employee(Human):
 
             self.set_rest(i, list(range(start, end)))
     def get_remark(self):
-        remark = ""
         week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-        if len(self.personal_leave) > 0:
-            remark += "請假:"
-            for personal_leave in self.personal_leave:
-                remark += f"{personal_leave[0] + 1}/{self.format.period_name[personal_leave[1]]}\
-                            ~{personal_leave[2] + 1}/{self.format.period_name[personal_leave[3]]} "
-        
-        if len(self.hate_period) > 0:
-            remark += ' ,不喜歡的時段'
-            for hate_period in self.hate_period:
-                remark += f"{hate_period[0]}/{week[hate_period[1]]}/{self.format.period_name[hate_period[2]]} "
-        
-        if len(self.bind_period) > 0:
-            remark += ' ,被指定的時段'
-            for bind_period in self.bind_period:
-                remark += f"{bind_period[0]}/{week[bind_period[1]]}/{self.format.period_name[bind_period[2]]} "
 
-        return remark
+        output = {"personal_leave" : '', "hate_period" : '', "bind_period" : ''}
         
+        if len(self.personal_leave_input) != 0:
+            output['personal_leave'] = "請假:" + self.personal_leave_input
+        if len(self.hate_period_input) != 0:
+            output['hate_period'] = "不想跟的診間時段:" + self.__get_period(self.hate_period, week=week)
+        if len(self.bind_period_input) != 0:
+            output['bind_period'] = "被指定的診間時段:" + self.__get_period(self.bind_period, week=week)
+
+        return output
+    def __get_period(self, periods : list, week=list(range(0, 7))) -> str:
+        output = ""
+        for i in range(len(periods)):
+            period = periods[i]
+            output += f"{period[0]}/{week[period[1]]}/{self.format.period_name[period[2]]}"
+            if i != len(periods) - 1:
+                output += ","
+        return output
+    def __get_personal_leave(self):
+        output = ""
+        for i in range(len(self.personal_leave)):
+            personal_leave = self.personal_leave[i]
+            output += "{}/{}~{}/{}".format(personal_leave[0] + 1, self.format.period_name[personal_leave[1]],\
+                                           personal_leave[2] + 1, self.format.period_name[personal_leave[3]])
+            if i != len(self.personal_leave) - 1:
+                output += ","
+        return output
+        
+    
                     
 
 
