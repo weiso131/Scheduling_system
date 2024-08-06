@@ -159,7 +159,9 @@ def build_schedule():
     my_schedual.bind_schedual()
     my_schedual.basic_schedual(last_month=last_month)
     return render_template("show_schedule.html", month=month, days=format.week_day_of_month(), \
-                           employees=my_schedual.get_employee_json(use_state=True), title=f"{year}年 {month}月 班表")
+                           employees=my_schedual.get_employee_json(use_state=True), \
+                            departments=my_schedual.get_department_json(use_state=True), \
+                                title=f"{year}年 {month}月 班表")
 
 @app.route('/to_excel')
 def to_excel():

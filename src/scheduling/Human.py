@@ -23,7 +23,9 @@ class Human():
                 if self.format.manpower_in_days[i][j] == 0:
                     self.state[i].append(["X"])
                 else:
-                    self.state[i].append(["_"])
+                    self.state[i].append([])
+                    for _ in range(int(self.format.manpower_in_days[i][j])):
+                        self.state[i][j].append("_")
         
     def set_rest(self, day : int, periods : list):
         """
@@ -52,8 +54,6 @@ class Department(Human):
         self.man_power_input = man_power_input
         self.rest_time_input = rest_time_input
 
-        print(self.rest_time)
-        print(self.man_power)
 
         for week_day, period, man_power in self.man_power:
             self.change_manpower_week(week_day, period, man_power)
@@ -69,9 +69,10 @@ class Department(Human):
         self.basic_format.manpower_in_days[day][period] = manpower
         self.format.manpower_in_days[day][period] = manpower
         while len(self.state[day][period]) < int(self.format.manpower_in_days[day][period]): 
-            self.state[day][period].append(" ")
+            self.state[day][period].append("_")
         while len(self.state[day][period]) > int(self.format.manpower_in_days[day][period]): 
             self.state[day][period].pop()
+        
     def change_manpower_week(self, week_day : int, period : int, manpower : int):
         for i in range((week_day - self.format.start_day + 7) % 7, self.format.day_nums, 7):
             self.change_manpower(i, period, manpower)
@@ -82,6 +83,7 @@ class Department(Human):
         man_fill_pos = len(self.state[day][period]) - int(self.format.manpower_in_days[day][period])
         self.state[day][period][man_fill_pos] = fill_name
         self.format.manpower_in_days[day][period] -= 1
+
     def get_remark(self):
         output = {"man_power" : "", "rest_time" : ""}
         if self.man_power_input != "":
