@@ -28,7 +28,7 @@ class ScheduleContainer():
     def get_department_json(self):
         json = []
         for i in range(len(self.departments)):
-            json.append({"name": self.departments[i].name, "id" : i})
+            json.append({"name": self.departments[i].name, "remark" : self.departments[i].get_remark(),"id" : i})
         return json
     def get_employee_json(self, use_state=False):
         json = []

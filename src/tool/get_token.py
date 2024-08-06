@@ -10,9 +10,9 @@ def scanf(token : str, target : str):
     for i in range(len(target_list)):
         if target_list[i] == 's':
             output.append(token_list[i])
-        elif target_list[i] == 'd':
+        elif target_list[i] == 'd': #日期
             try:
-                output.append(int(token_list[i]) - 1) #電腦是從0開始的
+                output.append(int(token_list[i]) - 1)
             except ValueError:
                 return f"{token_list[i]}無效的日子"
         elif target_list[i] == 'w': #星期幾
@@ -20,6 +20,11 @@ def scanf(token : str, target : str):
                 output.append((int(token_list[i]) + 7) % 7)
             except ValueError:
                 return f"{token_list[i]}無效的日子"
+        elif target_list[i] == 'n': #正常數字
+            try:
+                output.append(int(token_list[i]))
+            except ValueError:
+                return f"{token_list[i]}無效的數字"
         elif target_list[i] == 'p':
             if token_list[i] == '上午':
                 output.append(0)
@@ -57,7 +62,7 @@ def get_personal_leave(tokens : str):
     
     return output
 
-def get_period(tokens : str):
+def get_normal_token(tokens : str, target : str):
     tokens = tokens.replace(' ', '')
     token_list = tokens.split(',')
 
@@ -66,14 +71,9 @@ def get_period(tokens : str):
     for token in token_list:
         if len(token) == 0:
             continue
-        period = scanf(token, 's/w/p')
+        period = scanf(token, target)
         if type(period) is not tuple:
             return period
         
         output.append(period)
     return output
-
-# inputs = "09/上午~ 10/下午, 11/上午~ 12/下午, "
-# inputs1 = "87/1/上午, "
-# print(get_personal_leave(inputs))
-# print(get_period(inputs1))

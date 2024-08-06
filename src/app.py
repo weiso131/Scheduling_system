@@ -1,5 +1,7 @@
 from datetime import datetime, date
+import webbrowser
 import calendar
+import threading
 
 from flask import Flask, request, redirect, url_for, render_template
 
@@ -23,8 +25,8 @@ app = Flask(__name__)
 def set_employee_data(form : dict):
     name = form['name']
     last_room = form['last_working_room']
-    hate_periods = get_period(form['hate_period'])
-    bind_periods = get_period(form['bind_period'])
+    hate_periods = get_normal_token(form['hate_period'], 's/w/p')
+    bind_periods = get_normal_token(form['bind_period'], 's/w/p')
     personal_leave = get_personal_leave(form['personal_leave'])
 
     
@@ -32,6 +34,15 @@ def set_employee_data(form : dict):
                             hate_period=hate_periods, personal_leave=personal_leave)
         
     return new_employee
+
+
+def set_department_data(form : dict):
+    name = request.form['name']
+    man_power = get_normal_token(form['man_power'], "w/p/n")
+    rest_time = get_normal_token(form['rest_time'], "w/p")
+    new_department = Department(name, format, man_power=man_power, rest_time=rest_time, \
+                                man_power_input=form['man_power'], rest_time_input=form['rest_time'])
+    return new_department
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -88,11 +99,11 @@ def edit(target_class, id):
     else:
         if request.method == 'GET':
             target = my_schedual.departments[id]
-            origin = {'name' : target.name,'man_power' : '','rest_time' : ''}
+            origin = {'name' : target.name,'man_power' : target.man_power_input,'rest_time' : target.rest_time_input}
             return render_template('department_form.html', title="編輯診間資訊", origin=origin, \
                                    post_url=url_for('edit', target_class=target_class, id=id))
         else:
-            pass
+            my_schedual.departments[id] = set_department_data(request.form)
 
 
     return redirect(url_for('show_status')) 
@@ -134,8 +145,7 @@ def add_department():
         origin = {'name' : '', 'man_power' : '', 'rest_time' : ''}
         return render_template('department_form.html', origin=origin, title="新增診間")
     else:
-        name = request.form['name']
-        new_department = Department(name, format)
+        new_department = set_department_data(request.form)
         my_schedual.departments.append(new_department)
         return redirect(url_for('show_status'))
 
@@ -155,5 +165,10 @@ def build_schedule():
 def to_excel():
     return "meow"
 
+def web_open():
+    webbrowser.open_new('http://127.0.0.1:5000/')
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    threading.Timer(1.25, web_open).start()
+    app.run(debug=False)
+    

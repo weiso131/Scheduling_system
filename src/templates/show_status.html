@@ -15,6 +15,7 @@
             <thead>
                 <tr>
                     <th>診間名稱</th>
+                    <th>備註</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -22,6 +23,7 @@
                 {% for department in departments %}
                 <tr>
                     <td>{{ department.name }}</td>
+                    <td>{{ department.remark.man_power }}<br>{{ department.remark.rest_time }}</td>
                     <td class="transaction-actions">
                         <a href="{{ url_for('edit', target_class=0, id=department.id) }}" class="button">Edit</a>
                         <a href="{{ url_for('delete', target_class=0, id=department.id) }}" class="button">Delete</a>

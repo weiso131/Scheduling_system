@@ -3,6 +3,8 @@ import copy
 
 from .SchedualFormat import *
 
+
+
 class Human():
     def __init__(self, name : str, format : SchedualFormat):
         self.name = name
@@ -43,28 +45,51 @@ class Human():
         return self.format.manpower_in_days[day][period] > 0
 
 class Department(Human):
-    def __init__(self, name : str, format : SchedualFormat):
+    def __init__(self, name : str, format : SchedualFormat, man_power=[], rest_time=[], man_power_input="", rest_time_input=""):
         super().__init__(name, format)
-    def change_manpower(self, day : int, periods : list, manpower : int):
+        self.man_power = man_power
+        self.rest_time = rest_time
+        self.man_power_input = man_power_input
+        self.rest_time_input = rest_time_input
+
+        print(self.rest_time)
+        print(self.man_power)
+
+        for week_day, period, man_power in self.man_power:
+            self.change_manpower_week(week_day, period, man_power)
+        for week_day, period in self.rest_time:
+            self.set_rest_week(week_day, period)
+    def change_manpower(self, day : int, period : int, manpower : int):
         """"
         change the need of the manpower on the periods
         """
-        if self.format.check_period(periods) or self.format.check_day(day):
+        if self.format.check_period([period]) or self.format.check_day(day):
             return
-        for j in periods:
-            self.basic_format[day][j] = manpower
-            self.format.manpower_in_days[day][j] = manpower
-            while len(self.state[day][j]) < int(self.format.manpower_in_days[day][j]): 
-                self.state[day][j].append(" ")
-            while len(self.state[day][j]) > int(self.format.manpower_in_days[day][j]): 
-                self.state[day][j].pop()
-    def set_rest_week(self, week_day : int, periods : list):
+
+        self.basic_format.manpower_in_days[day][period] = manpower
+        self.format.manpower_in_days[day][period] = manpower
+        while len(self.state[day][period]) < int(self.format.manpower_in_days[day][period]): 
+            self.state[day][period].append(" ")
+        while len(self.state[day][period]) > int(self.format.manpower_in_days[day][period]): 
+            self.state[day][period].pop()
+    def change_manpower_week(self, week_day : int, period : int, manpower : int):
         for i in range((week_day - self.format.start_day + 7) % 7, self.format.day_nums, 7):
-            self.set_rest(i, periods)
+            self.change_manpower(i, period, manpower)
+    def set_rest_week(self, week_day : int, period : int):
+        for i in range((week_day - self.format.start_day + 7) % 7, self.format.day_nums, 7):
+            self.set_rest(i, [period])
     def schedual_fill(self, fill_name : str, day : int, period : int):
         man_fill_pos = len(self.state[day][period]) - int(self.format.manpower_in_days[day][period])
         self.state[day][period][man_fill_pos] = fill_name
         self.format.manpower_in_days[day][period] -= 1
+    def get_remark(self):
+        output = {"man_power" : "", "rest_time" : ""}
+        if self.man_power_input != "":
+            output["man_power"] = "人力更動:" + self.man_power_input
+        if self.rest_time_input!= "":
+            output["rest_time"] = "休診時間:" + self.rest_time_input
+
+        return output
     
 class Employee(Human):
     def __init__(self, name : str, start_department : str, format : SchedualFormat, hate_period=[], bind_period=[], personal_leave=[]):
