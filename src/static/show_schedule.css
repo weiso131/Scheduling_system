@@ -15,11 +15,11 @@ body {
     overflow-x: auto; /* Added to handle horizontal overflow */
 }
 
-h1, h2 {
+h1, h3 {
     text-align: center;
     color: #333;
 }
-h3 {
+h2 {
     text-align: left;
     color: #333;
 }

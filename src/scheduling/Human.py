@@ -139,7 +139,7 @@ class Employee(Human):
             if i == start_day:
                 start = start_period
             elif i == end_day:
-                end = end_period
+                end = end_period + 1
 
             self.set_rest(i, list(range(start, end)))
     def get_remark(self):

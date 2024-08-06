@@ -9,8 +9,7 @@
 <body>
     <div class="container">
         <h1>{{title}}</h1>
-        <h2><a href="{{ url_for('show_status') }}" class="button">返回</a></h2>
-        <h3>員工班表</h3>
+        <h2>員工班表</h2>
         <div class="table-container">
             
             <table>
@@ -34,7 +33,7 @@
                 </tbody>
             </table>
         </div>
-        <h3>診間班表</h3>
+        <h2>診間班表</h2>
         <div class="table-container">
             
             <table>
@@ -51,17 +50,28 @@
                     <tr>
                         <td>{{ department.name }}</td>
                         {% for day in department.state %}
-                        <td>上午:{{ day[0] }}<br>下午:{{ day[1] }}</td>
+                        <td>
+                            上午:
+                            {% for name in day[0] %}
+                            {{ name }},
+                            {% endfor %}
+                            <br>
+                            下午:
+                            {% for name in day[1] %}
+                            {{ name }},
+                            {% endfor %}
+                        </td>
                         {% endfor %}
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        <h2>
+        <h3>
+            <a href="{{ url_for('show_status') }}" class="button">返回</a>
             <a href="{{ url_for('build_schedule') }}" class="button">切換是否接續上個月</a>
             <a href="{{ url_for('to_excel') }}" class="button">存成excel</a>
-        </h2>
+        </h3>
     </div>
 </body>
 </html>
