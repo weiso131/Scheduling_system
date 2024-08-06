@@ -1,9 +1,11 @@
 from datetime import datetime, date
+from io import BytesIO
 import webbrowser
 import calendar
 import threading
 
-from flask import Flask, request, redirect, url_for, render_template
+import pandas as pd
+from flask import Flask, request, redirect, url_for, render_template, send_file 
 
 
 from scheduling import *
@@ -165,7 +167,16 @@ def build_schedule():
 
 @app.route('/to_excel')
 def to_excel():
-    return "meow"
+    global year, month
+    df = my_schedual.to_excel(month)
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=True)
+    output.seek(0)
+
+    # 使用 send_file 返回文件
+    return send_file(output, as_attachment=True, download_name=f"{year}年{month}月班表.xlsx", \
+                     mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 def web_open():
     webbrowser.open_new('http://127.0.0.1:5000/')
