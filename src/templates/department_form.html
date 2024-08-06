@@ -37,8 +37,8 @@
             const manPower = document.getElementById('man_power').value;
             const restTime = document.getElementById('rest_time').value;
             
-            const manPowerPattern = /^(\s*[0-7]\/(上午|下午)\/[0-9]*\s*)*(,\s*[0-7]\/(上午|下午)\/[0-9]*\s*)*$/;
-            const restTimePattern = /^(\s*[0-7]\/(上午|下午)\s*)*(,\s*[0-7]\/(上午|下午)\s*)*$/;
+            const manPowerPattern = /^(\s*[0-7]\/(上午|下午|早上)\/[0-9]*\s*)*(,\s*[0-7]\/(上午|下午|早上)\/[0-9]*\s*)*$/;
+            const restTimePattern = /^(\s*[0-7]\/(上午|下午|早上)\s*)*(,\s*[0-7]\/(上午|下午|早上)\s*)*$/;
             
             if (!manPowerPattern.test(manPower)) {
                 alert('人力需求改變格式錯誤');

@@ -26,7 +26,7 @@ def scanf(token : str, target : str):
             except ValueError:
                 return f"{token_list[i]}無效的數字"
         elif target_list[i] == 'p':
-            if token_list[i] == '上午':
+            if token_list[i] == '上午' or token_list[i] == '早上':
                 output.append(0)
             elif token_list[i] == '下午':
                 output.append(1)

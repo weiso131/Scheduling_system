@@ -121,9 +121,11 @@ class Employee(Human):
         return employee_work
     def check_avaliable(self, day: int, period: int, department : Department):
         employee_avalible = super().check_avaliable(day, period)
+        
         for hate_name, hate_day, hate_periods in self.hate_period:
+            
             is_hate_period = hate_name == department.name and\
-                (day + self.format.start_day) % 7 == hate_day and period in hate_periods 
+                (day + self.format.start_day) % 7 == hate_day and period == hate_periods 
                              
             employee_avalible = employee_avalible and (not is_hate_period)
         return employee_avalible

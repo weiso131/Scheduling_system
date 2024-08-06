@@ -65,8 +65,6 @@ def home():
         format.set_manpower_in_week(week_day=7, manpower=0, period=[0, 1])
 
         my_schedual = ScheduleContainer(format)
-        my_schedual.departments = [Department("82", format), Department("83", format), Department("84", format)]
-        my_schedual.employees = [Employee("A", "82", format), Employee("B", "83", format), Employee("C", "84", format)]
 
         return redirect(url_for('show_status'))
 
