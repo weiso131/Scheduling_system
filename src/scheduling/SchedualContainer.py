@@ -1,4 +1,5 @@
 import pandas as pd
+import json
 
 from .Human import *
 
@@ -41,6 +42,23 @@ class ScheduleContainer():
             if use_state:
                 json[i]["state"] = self.employees[i].state
         return json
+    def save_reuseable_data(self, path : str):
+        data = {"departments" : [], "employees" : []}
+        for department in self.departments:
+            data["departments"].append({"name" : department.name, \
+                                        "man_power" : department.man_power, \
+                                             "rest_time" : department.rest_time, \
+                                             "man_power_input" : department.man_power_input, \
+                                                 "rest_time_input" : department.rest_time_input})
+        for employee in self.employees:
+            data["employees"].append({"name" : employee.name, \
+                                             "start_department" : employee.start_department, \
+                                             "hate_period" : employee.hate_period, \
+                                                 "bind_period" : employee.bind_period})
+
+        with open(path, 'w', encoding="utf-8") as file:
+            json.dump(data, file, ensure_ascii=False, indent=4)
+
     def bind_schedual(self):
         for i in range(len(self.employees)):
             if len(self.employees[i].bind_period) == 0:

@@ -176,6 +176,18 @@ def to_excel():
     return send_file(output, as_attachment=True, download_name=f"{year}年{month}月班表.xlsx", \
                      mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
+@app.route('/save_reusable_data', methods=['GET', 'POST'])
+def save_reusable_data():
+    if request.method == 'GET':
+        return render_template('save_reusable_data.html')
+    else:
+        if my_schedual == None:
+            return redirect(url_for('home'))
+        my_schedual.save_reuseable_data(f"reusable_data/{request.form["file_name"]}.json")
+
+        return redirect(url_for('show_status'))
+
+
 def web_open():
     webbrowser.open_new('http://127.0.0.1:5000/')
 
