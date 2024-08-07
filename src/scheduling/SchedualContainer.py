@@ -68,18 +68,27 @@ class ScheduleContainer():
         data = {"departments" : [], "employees" : []}
         for department in self.departments:
             data["departments"].append({"name" : department.name, \
-                                        "man_power" : department.man_power, \
-                                             "rest_time" : department.rest_time, \
-                                             "man_power_input" : department.man_power_input, \
-                                                 "rest_time_input" : department.rest_time_input})
+                                        "man_power" : department.man_power_input, \
+                                             "rest_time" : department.rest_time_input})
         for employee in self.employees:
             data["employees"].append({"name" : employee.name, \
-                                             "start_department" : employee.start_department, \
-                                             "hate_period" : employee.hate_period, \
-                                                 "bind_period" : employee.bind_period})
+                                             "last_working_room" : employee.start_department, \
+                                             "hate_period" : employee.hate_period_input, \
+                                                 "bind_period" : employee.bind_period_input, \
+                                                    "personal_leave" : ""})
 
         with open(path, 'w', encoding="utf-8") as file:
             json.dump(data, file, ensure_ascii=False, indent=4)
+    def load_reusable_data(self, path : str):
+        with open(path, 'r', encoding="utf-8") as file:
+            data = json.load(file)
+        for employee in data["employees"]:
+            new_employee = self.set_employee_data(employee)
+            self.employees.append(new_employee)
+        for department in data["departments"]:
+            new_department = self.set_department_data(department)
+            self.departments.append(new_department)
+
 
     def bind_schedual(self):
         for i in range(len(self.employees)):

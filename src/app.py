@@ -3,16 +3,17 @@ from io import BytesIO
 import webbrowser
 import calendar
 import threading
+import os
 
 import pandas as pd
 from flask import Flask, request, redirect, url_for, render_template, send_file 
 
 
 from scheduling import *
-from tool import *
 
 DEPARTMNT = 0
 EMPLOYEE = 1
+SAVE_PATH = f"{os.getcwd()}/reusable_data"
 
 year = -1
 month = 7
@@ -24,48 +25,31 @@ my_schedual = None
 app = Flask(__name__)
 
 
-def set_employee_data(form : dict):
-    name = form['name']
-    last_room = form['last_working_room']
-    hate_periods = get_normal_token(form['hate_period'], 's/w/p')
-    bind_periods = get_normal_token(form['bind_period'], 's/w/p')
-    personal_leave = get_personal_leave(form['personal_leave'])
-
-    
-    new_employee = Employee(name, last_room, format, bind_period=bind_periods, \
-                            hate_period=hate_periods, personal_leave=personal_leave)
-        
-    return new_employee
-
-
-def set_department_data(form : dict):
-    name = request.form['name']
-    man_power = get_normal_token(form['man_power'], "w/p/n")
-    rest_time = get_normal_token(form['rest_time'], "w/p")
-    new_department = Department(name, format, man_power=man_power, rest_time=rest_time, \
-                                man_power_input=form['man_power'], rest_time_input=form['rest_time'])
-    return new_department
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
     global year, month, format, my_schedual
     if request.method == 'GET':
+        
+        if os.path.exists(SAVE_PATH) == False:
+            os.mkdir(SAVE_PATH)
+
+        file_names = os.listdir(SAVE_PATH)
         now = datetime.now()
-        return render_template('home.html', default_data={"year" : str(now.year), "month" : str(now.month)})
+        return render_template('home.html', default_data={"year" : str(now.year), "file_names" : file_names})
     else:
         year = int(request.form['year'])
         month = int(request.form['month'])
-
-        specific_day = date(year, month, 1)
-        start_day = (specific_day.weekday() + 1 ) % 7
-        day_nums = calendar.monthrange(year, month)[1]
+        reusable_data_path = f"{SAVE_PATH}/{request.form['reusable_data']}"
         
-        format = SchedualFormat(day_nums=day_nums, period=2, start_day=start_day, period_name=["上午", "下午"])
+        format = SchedualFormat(day_nums=calendar.monthrange(year, month)[1], period=2, \
+                                start_day=(date(year, month, 1).weekday() + 1 ) % 7, period_name=["上午", "下午"])
         format.set_manpower_in_week(week_day=6, manpower=0, period=[1])
         format.set_manpower_in_week(week_day=7, manpower=0, period=[0, 1])
 
         my_schedual = ScheduleContainer(format)
-
+        if request.form['reusable_data'] != "(":
+            my_schedual.load_reusable_data(reusable_data_path)
         return redirect(url_for('show_status'))
 
 @app.route('/show_status')
@@ -93,7 +77,7 @@ def edit(target_class, id):
             return render_template('employee_form.html', title="編輯員工資訊", origin=origin, \
                                    post_url=url_for('edit', target_class=target_class, id=id))
         else:
-            my_schedual.employees[id] = set_employee_data(request.form)
+            my_schedual.employees[id] = my_schedual.set_employee_data(request.form)
             
 
     else:
@@ -103,7 +87,7 @@ def edit(target_class, id):
             return render_template('department_form.html', title="編輯診間資訊", origin=origin, \
                                    post_url=url_for('edit', target_class=target_class, id=id))
         else:
-            my_schedual.departments[id] = set_department_data(request.form)
+            my_schedual.departments[id] = my_schedual.set_department_data(request.form)
 
 
     return redirect(url_for('show_status')) 
@@ -129,7 +113,7 @@ def add_employee():
         return render_template('employee_form.html', title="新增員工", origin=origin, \
                                post_url=url_for('add_employee'))
     else:
-        new_employee = set_employee_data(request.form)
+        new_employee = my_schedual.set_employee_data(request.form)
         my_schedual.employees.append(new_employee)
 
         return redirect(url_for('show_status'))
@@ -145,7 +129,7 @@ def add_department():
         origin = {'name' : '', 'man_power' : '', 'rest_time' : ''}
         return render_template('department_form.html', origin=origin, title="新增診間")
     else:
-        new_department = set_department_data(request.form)
+        new_department = my_schedual.set_department_data(request.form)
         my_schedual.departments.append(new_department)
         return redirect(url_for('show_status'))
 
@@ -183,7 +167,7 @@ def save_reusable_data():
     else:
         if my_schedual == None:
             return redirect(url_for('home'))
-        my_schedual.save_reuseable_data(f"reusable_data/{request.form["file_name"]}.json")
+        my_schedual.save_reuseable_data(f"{SAVE_PATH}/{request.form["file_name"]}.json")
 
         return redirect(url_for('show_status'))
 
