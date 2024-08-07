@@ -11,56 +11,60 @@
         <h1>{{title}}</h1>
         
         <h3>診間</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>診間名稱</th>
-                    <th>備註</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for department in departments %}
-                <tr>
-                    <td>{{ department.name }}</td>
-                    <td>{{ department.remark.man_power }}<br>{{ department.remark.rest_time }}</td>
-                    <td class="transaction-actions">
-                        <a href="{{ url_for('edit', target_class=0, id=department.id) }}" class="button">Edit</a>
-                        <a href="{{ url_for('delete', target_class=0, id=department.id) }}" class="button">Delete</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>診間名稱</th>
+                        <th>備註</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for department in departments %}
+                    <tr>
+                        <td>{{ department.name }}</td>
+                        <td>{{ department.remark.man_power }}<br>{{ department.remark.rest_time }}</td>
+                        <td class="transaction-actions">
+                            <a href="{{ url_for('edit', target_class=0, id=department.id) }}" class="button">Edit</a>
+                            <a href="{{ url_for('delete', target_class=0, id=department.id) }}" class="button">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         
         <h3>員工</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>姓名</th>
-                    <th>起始診間</th>
-                    <th>備註</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for employee in employees %}
-                <tr>
-                    <td>{{ employee.name }}</td>
-                    <td>{{ employee.last_room }}</td>
-                    <td>
-                        {{ employee.remark.personal_leave }}<br>
-                        {{ employee.remark.hate_period }}<br>
-                        {{ employee.remark.bind_period }}
-                    </td>
-                    <td class="transaction-actions">
-                        <a href="{{ url_for('edit', target_class=1, id=employee.id) }}" class="button">Edit</a>
-                        <a href="{{ url_for('delete', target_class=1, id=employee.id) }}" class="button">Delete</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>起始診間</th>
+                        <th>備註</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.name }}</td>
+                        <td>{{ employee.last_room }}</td>
+                        <td>
+                            {{ employee.remark.personal_leave }}<br>
+                            {{ employee.remark.hate_period }}<br>
+                            {{ employee.remark.bind_period }}
+                        </td>
+                        <td class="transaction-actions">
+                            <a href="{{ url_for('edit', target_class=1, id=employee.id) }}" class="button">Edit</a>
+                            <a href="{{ url_for('delete', target_class=1, id=employee.id) }}" class="button">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         
         <div class="actions">
             <a href="{{ url_for('save_reusable_data') }}" class="button">儲存員工、診間資訊</a>
