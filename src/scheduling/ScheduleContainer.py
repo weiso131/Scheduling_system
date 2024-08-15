@@ -1,8 +1,7 @@
 import pandas as pd
 import json
 
-from .Human import *
-from .tool import *
+from .Human import Employee, Department, ScheduleFormat
 
 class ScheduleContainer():
     def __init__(self, format : ScheduleFormat, departments=[], employees=[]):
@@ -25,23 +24,18 @@ class ScheduleContainer():
     def set_employee_data(self, form : dict):
         name = form['name']
         last_room = form['last_working_room']
-        hate_periods = get_token(form['hate_period'], 's/w/p')
-        bind_periods = get_token(form['bind_period'], 's/w/p')
-        personal_leave = get_token(form['personal_leave'], 'd/p')
-
         
-        new_employee = Employee(name, last_room, self.format, bind_period=bind_periods, \
-                                hate_period=hate_periods, personal_leave=personal_leave)
+        new_employee = Employee(name, last_room, self.format, bind_period_input=form['bind_period'], \
+                                hate_period_input=form['hate_period'], personal_leave_input=form['personal_leave'])
             
         return new_employee
 
 
     def set_department_data(self, form : dict):
         name = form['name']
-        man_power = get_token(form['man_power'], "w/p/n")
-        rest_time = get_token(form['rest_time'], "w/p")
-        new_department = Department(name, self.format, man_power=man_power, rest_time=rest_time, \
-                                    man_power_input=form['man_power'], rest_time_input=form['rest_time'])
+
+        new_department = Department(name, self.format, man_power_input=form['man_power'], \
+                                    rest_time_input=form['rest_time'])
         return new_department
     def reload(self):
         for department in self.departments:

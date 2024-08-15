@@ -1,7 +1,7 @@
 import copy
 
-
-from .ScheduleFormat import *
+from .tool import get_token
+from .ScheduleFormat import ScheduleFormat
 
 
 
@@ -47,10 +47,10 @@ class Human():
         return self.format.manpower_in_days[day][period] > 0
 
 class Department(Human):
-    def __init__(self, name : str, format : ScheduleFormat, man_power=[], rest_time=[], man_power_input="", rest_time_input=""):
+    def __init__(self, name : str, format : ScheduleFormat, man_power_input="", rest_time_input=""):
         super().__init__(name, format)
-        self.man_power = man_power
-        self.rest_time = rest_time
+        self.man_power = get_token(man_power_input, "w/p/n")
+        self.rest_time = get_token(rest_time_input, "w/p")
         self.man_power_input = man_power_input
         self.rest_time_input = rest_time_input
 
@@ -94,22 +94,23 @@ class Department(Human):
         return output
     
 class Employee(Human):
-    def __init__(self, name : str, start_department : str, format : ScheduleFormat, hate_period=[], bind_period=[], personal_leave=[]):
+    def __init__(self, name : str, start_department : str, format : ScheduleFormat, hate_period_input="", \
+                 bind_period_input="", personal_leave_input=""):
         """
         hate_period : [("department_name", day, [periods, ])]
         bind_period : [("department_name", day, [periods, ])]
         """
         super().__init__(name, format)
         self.start_department = start_department
-        self.hate_period = hate_period
-        self.bind_period = bind_period
-        self.personal_leave = personal_leave
+        self.hate_period = get_token(hate_period_input, 's/w/p')
+        self.bind_period = get_token(bind_period_input, 's/w/p')
+        self.personal_leave = get_token(personal_leave_input, 'd/p')
 
-        self.hate_period_input = self.__get_period(hate_period)
-        self.bind_period_input = self.__get_period(bind_period)
-        self.personal_leave_input = self.__get_personal_leave()
+        self.hate_period_input = hate_period_input
+        self.bind_period_input = bind_period_input
+        self.personal_leave_input = personal_leave_input
 
-        for pl in personal_leave:
+        for pl in self.personal_leave:
             self.set_rest(pl[0], [pl[1]])
         
     def schedule_one_day_output(self, day : int):
@@ -140,27 +141,12 @@ class Employee(Human):
         if len(self.personal_leave_input) != 0:
             output['personal_leave'] = "請假:" + self.personal_leave_input
         if len(self.hate_period_input) != 0:
-            output['hate_period'] = "不想跟的診間時段:" + self.__get_period(self.hate_period, week=week)
+            output['hate_period'] = "不想跟的診間時段:" + self.hate_period_input
         if len(self.bind_period_input) != 0:
-            output['bind_period'] = "被指定的診間時段:" + self.__get_period(self.bind_period, week=week)
+            output['bind_period'] = "被指定的診間時段:" + self.bind_period_input
 
         return output
-    def __get_period(self, periods : list, week=list(range(0, 7))) -> str:
-        output = ""
-        for i in range(len(periods)):
-            period = periods[i]
-            output += f"{period[0]}/{week[period[1]]}/{self.format.period_name[period[2]]}"
-            if i != len(periods) - 1:
-                output += ","
-        return output
-    def __get_personal_leave(self):
-        output = ""
-        for i in range(len(self.personal_leave)):
-            personal_leave = self.personal_leave[i]
-            output += f"{personal_leave[0] + 1}/{self.format.period_name[personal_leave[1]]}"
-            if i != len(self.personal_leave) - 1:
-                output += ","
-        return output
+
         
     
                     
