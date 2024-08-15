@@ -5,11 +5,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const firstDayOfWeek = parseInt(calendarContainer.getAttribute('data-first-day-of-week'), 10);
     const daysInMonth = parseInt(calendarContainer.getAttribute('data-days-in-month'), 10);
-    let originalChoiceToken = calendarContainer.getAttribute('data-original-select-days').replace(/'/g, '"');
+    let originalChoiceToken = calendarContainer.getAttribute('data-original-select-days');
 
     // 用於儲存選中的時段
-    const selectedSlots = JSON.parse(originalChoiceToken);
-    let originCounter = 0;
+    const selectedSlots = originalChoiceToken.split(',');
+    if (originalChoiceToken == '') {
+        selectedSlots.pop();
+    }
+
     const periodName = ["/上", "/下"]
 
     // 生成日曆
@@ -31,13 +34,18 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let j = 0;j < 2;j++) {
             const Btn = document.createElement('button');
             Btn.textContent = i.toString() + periodName[j];
+            Btn.type = 'button';
             Btn.classList.add('periods');
             Btn.dataset.data = i.toString() + periodName[j] + "午";
             dateCell.appendChild(Btn);
-            if (originCounter < selectedSlots.length && Btn.dataset.data == selectedSlots[originCounter]) {
-                originCounter++;
-                Btn.classList.add('selected');
+
+            for (let k = 0;k < selectedSlots.length;k++) { //selectedSlot不一定是照順序排的
+                if (Btn.dataset.data == selectedSlots[k]) {
+                    Btn.classList.add('selected');
+                }
             }
+
+            
         }
 
         calendarContainer.appendChild(dateCell);

@@ -75,7 +75,8 @@ def edit(target_class, id):
                       'personal_leave' : target.personal_leave_input, \
                         'bind_period' : target.bind_period_input}
             return render_template('employee_form.html', title="編輯員工資訊", origin=origin, \
-                                   post_url=url_for('edit', target_class=target_class, id=id))
+                                   post_url=url_for('edit', target_class=target_class, id=id), \
+                                    firstDayOfWeek=format.start_day, daysInMonth=format.day_nums)
         else:
             my_schedual.employees[id] = my_schedual.set_employee_data(request.form)
             
@@ -111,7 +112,8 @@ def add_employee():
     if request.method == 'GET':
         origin = {'name' : '', 'room' : '', 'hate_period' : '', 'personal_leave' : '', 'bind_period' : ''}
         return render_template('employee_form.html', title="新增員工", origin=origin, \
-                               post_url=url_for('add_employee'))
+                               post_url=url_for('add_employee'), \
+                                    firstDayOfWeek=format.start_day, daysInMonth=format.day_nums)
     else:
         new_employee = my_schedual.set_employee_data(request.form)
         my_schedual.employees.append(new_employee)

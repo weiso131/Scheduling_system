@@ -110,7 +110,7 @@ class Employee(Human):
         self.personal_leave_input = self.__get_personal_leave()
 
         for pl in personal_leave:
-            self.__set_rest_period(pl)
+            self.set_rest(pl[0], [pl[1]])
         
     def schedual_one_day_output(self, day : int):
         employee_work = ""
@@ -132,18 +132,6 @@ class Employee(Human):
     def schedual_fill(self, fill_name : str, day : int, period : int):
         self.state[day][period][0] = fill_name
         self.format.manpower_in_days[day][period] -= 1
-    def __set_rest_period(self, personal_leave : tuple):
-        start_day, start_period, end_day, end_period = personal_leave
-        for i in range(start_day, end_day + 1):
-
-            start, end = 0, self.format.period
-
-            if i == start_day:
-                start = start_period
-            elif i == end_day:
-                end = end_period + 1
-
-            self.set_rest(i, list(range(start, end)))
     def get_remark(self):
         week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
@@ -169,8 +157,7 @@ class Employee(Human):
         output = ""
         for i in range(len(self.personal_leave)):
             personal_leave = self.personal_leave[i]
-            output += "{}/{}~{}/{}".format(personal_leave[0] + 1, self.format.period_name[personal_leave[1]],\
-                                           personal_leave[2] + 1, self.format.period_name[personal_leave[3]])
+            output += f"{personal_leave[0] + 1}/{self.format.period_name[personal_leave[1]]}"
             if i != len(self.personal_leave) - 1:
                 output += ","
         return output

@@ -27,7 +27,7 @@ class ScheduleContainer():
         last_room = form['last_working_room']
         hate_periods = get_normal_token(form['hate_period'], 's/w/p')
         bind_periods = get_normal_token(form['bind_period'], 's/w/p')
-        personal_leave = get_personal_leave(form['personal_leave'])
+        personal_leave = get_normal_token(form['personal_leave'], 'd/p')
 
         
         new_employee = Employee(name, last_room, self.format, bind_period=bind_periods, \
