@@ -57,3 +57,69 @@ td {
 .button:hover {
     background-color: #555;
 }
+
+#calendar-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    max-width: 350px;
+    margin: auto;
+    background-color: rgb(243, 243, 243);
+    padding: 3px 5px;
+}
+
+.date-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    font-size:10px;
+}
+
+.date-cell span {
+    margin-bottom: 1px;
+}
+
+button {
+    padding: 5px 10px;
+    margin: 2px;
+    border: none;
+    cursor: pointer;
+}
+
+.morning, .afternoon {
+    padding: 3px 5px;
+    margin: 1px;
+    width: 100%;
+    font-size:10px
+}
+
+.selected {
+    background-color: #3de48e;
+    color: white;
+}
+
+#submit-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #000d12;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+}
+
+#submit-btn:hover {
+    background-color: #8a8c8d;
+}
+
+.weekday {
+    text-align: center;
+    font-weight: bold;
+    padding: 2px 0;
+    border-bottom: 2px solid #ccc;
+    font-size: 12px;
+}

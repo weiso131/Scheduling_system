@@ -162,6 +162,7 @@ cython_debug/
 #.idea/
 
 src/test.py
+src/test_calender.py
 *.xlsx
 src/templates/test.html
 reusable_data/*.json
