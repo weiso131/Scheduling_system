@@ -13,49 +13,51 @@
         <form action="{{ post_url }}" method="POST" id="myForm">
             <table>
                 <tbody>
-                    <tr>
-                        <td><label for="name" class="label">姓名:</label></td>
-                        <td><input type="text" id="name" name="name" placeholder="必填" class="input" value="{{ origin['name'] }}" required></td>
-                    </tr>
-                    <tr>
-                        <td><label for="last_working_room" class="label">上次上班的診間:</label></td>
-                        <td><input type="text" id="last_working_room" name="last_working_room" placeholder="必填" class="input" value="{{ origin['room'] }}" required></td>
-                    </tr>
-                    <tr>
-                        <td><label for="personal_leave" class="label">請假時段(日期/時段,):</label></td>
-                        <td>
-                            <input type="text" id="personal_leave" name="personal_leave" placeholder="ex: 8/上午," class="input" value="{{ origin['personal_leave'] }}">
-                            <div style="padding-top:5px">
-                                <div id="calendar-container"
-                                data-first-day-of-week="{{ firstDayOfWeek }}"
-                                data-days-in-month="{{ daysInMonth }}"
-                                data-original-select-days="{{ origin['personal_leave'] }}">
-                                    <!-- Weekday labels -->
-                                    <div class="weekday">日</div>
-                                    <div class="weekday">一</div>
-                                    <div class="weekday">二</div>
-                                    <div class="weekday">三</div>
-                                    <div class="weekday">四</div>
-                                    <div class="weekday">五</div>
-                                    <div class="weekday">六</div>
-                                </div>
+                    <th>
+                        <tr>
+                            <td><label for="name" class="label">姓名:</label></td>
+                            <td><input type="text" id="name" name="name" placeholder="必填" class="input" value="{{ origin['name'] }}" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="last_working_room" class="label">上次上班的診間:</label></td>
+                            <td><input type="text" id="last_working_room" name="last_working_room" placeholder="必填" class="input" value="{{ origin['room'] }}" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="personal_leave" class="label">請假時段(日期/時段,):</label></td>
+                            <td>
+                                <input type="text" id="personal_leave" name="personal_leave" placeholder="ex: 8/上午," class="input" value="{{ origin['personal_leave'] }}">
+                                <div style="padding-top:5px">
+                                    <div id="calendar-container"
+                                    data-first-day-of-week="{{ firstDayOfWeek }}"
+                                    data-days-in-month="{{ daysInMonth }}"
+                                    data-original-select-days="{{ origin['personal_leave'] }}">
+                                        <!-- Weekday labels -->
+                                        <div class="weekday">日</div>
+                                        <div class="weekday">一</div>
+                                        <div class="weekday">二</div>
+                                        <div class="weekday">三</div>
+                                        <div class="weekday">四</div>
+                                        <div class="weekday">五</div>
+                                        <div class="weekday">六</div>
+                                    </div>
                                 
-                            </div>
-                            <script src="{{ url_for('static', filename='calender.js') }}"></script>
-                        </td>
+                                </div>
+                                <script src="{{ url_for('static', filename='calender.js') }}"></script>
+                            </td>
                         
-                    </tr>
-                    <tr>
-                        <td><label for="hate_period" class="label">不想跟的診間時段(診間/星期幾/時段,):</label></td>
-                        <td><input type="text" id="hate_period" name="hate_period" placeholder="ex: 87/1/上午," class="input" value="{{ origin['hate_period'] }}"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="bind_period" class="label">被指定要跟的時段(診間/星期幾/時段,):</label></td>
-                        <td><input type="text" id="bind_period" name="bind_period" placeholder="ex: 87/1/上午," class="input" value="{{ origin['bind_period'] }}"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><button type="submit" class="button">提交</button></td>
-                    </tr>
+                        </tr>
+                        <tr>
+                            <td><label for="hate_period" class="label">不想跟的診間時段(診間/星期幾/時段,):</label></td>
+                            <td><input type="text" id="hate_period" name="hate_period" placeholder="ex: 87/1/上午," class="input" value="{{ origin['hate_period'] }}"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="bind_period" class="label">被指定要跟的時段(診間/星期幾/時段,):</label></td>
+                            <td><input type="text" id="bind_period" name="bind_period" placeholder="ex: 87/1/上午," class="input" value="{{ origin['bind_period'] }}"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><button type="submit" class="button">提交</button></td>
+                        </tr>
+                    </th>
                 </tbody>
             </table>
         </form>

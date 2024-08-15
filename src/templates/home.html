@@ -12,26 +12,28 @@
         <form action="{{ url_for('home') }}" method="POST" class="form">
             <table class="table">
                 <tbody>
-                    <tr>
-                        <td><label for="year" class="label">年分:</label></td>
-                        <td><input type="text" id="year" name="year" value="{{default_data['year']}}" class="input" required></td>
-                    </tr>
-                    <tr>
-                        <td><label for="month" class="label">月份:</label></td>
-                        <td><input type="text" id="month" name="month" class="input" required></td>
-                    </tr>
-                    <tr>
-                        <td><label for="reusable_data" class="label">讀取員工、診間資料</label></td>
-                        <td><select id="reusable_data" name="reusable_data" class="input">
-                            <option value="(">無</option>
-                            {% for name in default_data.file_names %}
-                            <option value="{{ name }}">{{ name }}</option>
-                            {% endfor %}
-                        </select></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><button type="submit" class="button">提交</button></td>
-                    </tr>
+                    <th>
+                        <tr>
+                            <td><label for="year" class="label">年分:</label></td>
+                            <td><input type="text" id="year" name="year" value="{{default_data['year']}}" class="input" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="month" class="label">月份:</label></td>
+                            <td><input type="text" id="month" name="month" class="input" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="reusable_data" class="label">讀取員工、診間資料</label></td>
+                            <td><select id="reusable_data" name="reusable_data" class="input">
+                                <option value="(">無</option>
+                                {% for name in default_data.file_names %}
+                                <option value="{{ name }}">{{ name }}</option>
+                                {% endfor %}
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><button type="submit" class="button">提交</button></td>
+                        </tr>
+                    </th>
                 </tbody>
             </table>
         </form>

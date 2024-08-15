@@ -13,21 +13,23 @@
         <form action="{{ post_url }}" method="POST" id="myForm">
             <table>
                 <tbody>
-                    <tr>
-                        <td><label for="name" class="label">名稱:</label></td>
-                        <td><input type="text" id="name" name="name" class="input" value="{{ origin['name'] }}" required></td>
-                    </tr>
-                    <tr>
-                        <td><label for="man_power" class="label">人力需求改變(禮拜幾/時段/人力):</label></td>
-                        <td><input type="text" id="man_power" name="man_power" placeholder="ex: 1/上午/2," class="input" value="{{ origin['man_power'] }}"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="rest_time" class="label">休診時間(禮拜幾/時段):</label></td>
-                        <td><input type="text" id="rest_time" name="rest_time" placeholder="ex: 1/上午," class="input" value="{{ origin['rest_time'] }}"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><button type="submit" class="button">提交</button></td>
-                    </tr>
+                    <th>
+                        <tr>
+                            <td><label for="name" class="label">名稱:</label></td>
+                            <td><input type="text" id="name" name="name" class="input" value="{{ origin['name'] }}" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="man_power" class="label">人力需求改變(禮拜幾/時段/人力):</label></td>
+                            <td><input type="text" id="man_power" name="man_power" placeholder="ex: 1/上午/2," class="input" value="{{ origin['man_power'] }}"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="rest_time" class="label">休診時間(禮拜幾/時段):</label></td>
+                            <td><input type="text" id="rest_time" name="rest_time" placeholder="ex: 1/上午," class="input" value="{{ origin['rest_time'] }}"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><button type="submit" class="button">提交</button></td>
+                        </tr>
+                    </th>
                 </tbody>
             </table>
         </form>

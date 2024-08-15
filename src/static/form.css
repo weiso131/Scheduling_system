@@ -109,7 +109,7 @@ button {
     border: none;
     cursor: pointer;
     display: block;
-    margin: 20px auto;
+    margin: 20px;
 }
 
 #submit-btn:hover {

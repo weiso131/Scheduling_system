@@ -22,14 +22,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for employee in employees %}
-                    <tr>
-                        <td>{{ employee.name }}</td>
-                        {% for day in employee.state %}
-                        <td>上午:{{ day[0][0] }}<br>下午:{{ day[1][0] }}</td>
+                    <th>
+                        {% for employee in employees %}
+                        <tr>
+                            <td>{{ employee.name }}</td>
+                            {% for day in employee.state %}
+                            <td>上午:{{ day[0][0] }}<br>下午:{{ day[1][0] }}</td>
+                            {% endfor %}
+                        </tr>
                         {% endfor %}
-                    </tr>
-                    {% endfor %}
+                    </th>
                 </tbody>
             </table>
         </div>
