@@ -22,9 +22,9 @@
                         <td><input type="text" id="last_working_room" name="last_working_room" placeholder="必填" class="input" value="{{ origin['room'] }}" required></td>
                     </tr>
                     <tr>
-                        <td><label for="personal_leave" class="label">請假時段(日期/時段~日期/時段,):</label></td>
+                        <td><label for="personal_leave" class="label">請假時段(日期/時段,):</label></td>
                         <td>
-                            <input type="text" id="personal_leave" name="personal_leave" placeholder="ex: 8/上午~9/下午," class="input" value="{{ origin['personal_leave'] }}">
+                            <input type="text" id="personal_leave" name="personal_leave" placeholder="ex: 8/上午," class="input" value="{{ origin['personal_leave'] }}">
                             <div style="padding-top:5px">
                                 <div id="calendar-container"
                                 data-first-day-of-week="{{ firstDayOfWeek }}"
