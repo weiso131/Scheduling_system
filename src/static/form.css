@@ -89,7 +89,7 @@ button {
     cursor: pointer;
 }
 
-.morning, .afternoon {
+.periods {
     padding: 3px 5px;
     margin: 1px;
     width: 100%;

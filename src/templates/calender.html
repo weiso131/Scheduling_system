@@ -29,19 +29,20 @@
                             <div style="padding-top:5px">
                                 <div id="calendar-container"
                                 data-first-day-of-week="{{ firstDayOfWeek }}"
-                                data-days-in-month="{{ daysInMonth }}">
-                                <!-- Weekday labels -->
-                                <div class="weekday">日</div>
-                                <div class="weekday">一</div>
-                                <div class="weekday">二</div>
-                                <div class="weekday">三</div>
-                                <div class="weekday">四</div>
-                                <div class="weekday">五</div>
-                                <div class="weekday">六</div>
+                                data-days-in-month="{{ daysInMonth }}"
+                                data-original-select-days='{{ origin["personal_leave"]}}'>
+                                    <!-- Weekday labels -->
+                                    <div class="weekday">日</div>
+                                    <div class="weekday">一</div>
+                                    <div class="weekday">二</div>
+                                    <div class="weekday">三</div>
+                                    <div class="weekday">四</div>
+                                    <div class="weekday">五</div>
+                                    <div class="weekday">六</div>
                                 </div>
-                                <script src="{{ url_for('static', filename='calender.js') }}"></script>
+                                
                             </div>
-                            
+                            <script src="{{ url_for('static', filename='calender.js') }}"></script>
                         </td>
                         <td>
                             

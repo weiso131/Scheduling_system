@@ -1,12 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     const calendarContainer = document.getElementById('calendar-container');
     const dateInput = document.getElementById('personal_leave');
+    
 
     const firstDayOfWeek = parseInt(calendarContainer.getAttribute('data-first-day-of-week'), 10);
     const daysInMonth = parseInt(calendarContainer.getAttribute('data-days-in-month'), 10);
+    let originalChoiceToken = calendarContainer.getAttribute('data-original-select-days').replace(/'/g, '"');
 
     // 用於儲存選中的時段
-    const selectedSlots = [];
+    const selectedSlots = JSON.parse(originalChoiceToken);
+    let originCounter = 0;
+    const periodName = ["/上", "/下"]
 
     // 生成日曆
     for (let i = 0; i < firstDayOfWeek; i++) {
@@ -22,29 +26,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const dateLabel = document.createElement('span');
         dateCell.appendChild(dateLabel);
 
-        const morningBtn = document.createElement('button');
-        morningBtn.textContent = i.toString() + "/上";
-        morningBtn.classList.add('morning');
-        morningBtn.dataset.date = i;
-        morningBtn.dataset.period = '上午';
-        dateCell.appendChild(morningBtn);
+        
 
-        const afternoonBtn = document.createElement('button');
-        afternoonBtn.textContent = i.toString() + "/下";
-        afternoonBtn.classList.add('afternoon');
-        afternoonBtn.dataset.date = i;
-        afternoonBtn.dataset.period = '下午';
-        dateCell.appendChild(afternoonBtn);
+        for (let j = 0;j < 2;j++) {
+            const Btn = document.createElement('button');
+            Btn.textContent = i.toString() + periodName[j];
+            Btn.classList.add('periods');
+            Btn.dataset.data = i.toString() + periodName[j] + "午";
+            dateCell.appendChild(Btn);
+            if (originCounter < selectedSlots.length && Btn.dataset.data == selectedSlots[originCounter]) {
+                originCounter++;
+                Btn.classList.add('selected');
+            }
+        }
 
         calendarContainer.appendChild(dateCell);
     }
-
+    dateInput.value = selectedSlots.join(', ');
     // 处理按钮点击事件
     calendarContainer.addEventListener('click', function(event) {
         if (event.target.tagName === 'BUTTON') {
-            const selectedDate = event.target.dataset.date;
-            const selectedPeriod = event.target.dataset.period;
-            const slot = `${selectedDate}/${selectedPeriod}`;
+            const slot = event.target.dataset.data;
 
             // 如果已經選中，取消選擇
             if (event.target.classList.contains('selected')) {
