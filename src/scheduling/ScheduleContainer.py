@@ -5,7 +5,7 @@ from .Human import *
 from .tool import *
 
 class ScheduleContainer():
-    def __init__(self, format : SchedualFormat, departments=[], employees=[]):
+    def __init__(self, format : ScheduleFormat, departments=[], employees=[]):
         self.departments = departments
         self.employees = employees
         self.format = format
@@ -13,10 +13,10 @@ class ScheduleContainer():
         department_need = self.departments[department_index].check_avaliable(day, period)
         employee_avalible = self.employees[employee_index].check_avaliable(day, period, self.departments[department_index])
         return department_need and employee_avalible
-    def __schedual_fill(self, department_index : int, employee_index : int, day : int, period : int):
+    def __schedule_fill(self, department_index : int, employee_index : int, day : int, period : int):
         
-        self.departments[department_index].schedual_fill(self.employees[employee_index].name, day, period)
-        self.employees[employee_index].schedual_fill(self.departments[department_index].name, day, period)
+        self.departments[department_index].schedule_fill(self.employees[employee_index].name, day, period)
+        self.employees[employee_index].schedule_fill(self.departments[department_index].name, day, period)
     def __get_department_index(self, department_name : str):
         for i in range(len(self.departments)):
             if self.departments[i].name == department_name:
@@ -25,9 +25,9 @@ class ScheduleContainer():
     def set_employee_data(self, form : dict):
         name = form['name']
         last_room = form['last_working_room']
-        hate_periods = get_normal_token(form['hate_period'], 's/w/p')
-        bind_periods = get_normal_token(form['bind_period'], 's/w/p')
-        personal_leave = get_normal_token(form['personal_leave'], 'd/p')
+        hate_periods = get_token(form['hate_period'], 's/w/p')
+        bind_periods = get_token(form['bind_period'], 's/w/p')
+        personal_leave = get_token(form['personal_leave'], 'd/p')
 
         
         new_employee = Employee(name, last_room, self.format, bind_period=bind_periods, \
@@ -38,8 +38,8 @@ class ScheduleContainer():
 
     def set_department_data(self, form : dict):
         name = form['name']
-        man_power = get_normal_token(form['man_power'], "w/p/n")
-        rest_time = get_normal_token(form['rest_time'], "w/p")
+        man_power = get_token(form['man_power'], "w/p/n")
+        rest_time = get_token(form['rest_time'], "w/p")
         new_department = Department(name, self.format, man_power=man_power, rest_time=rest_time, \
                                     man_power_input=form['man_power'], rest_time_input=form['rest_time'])
         return new_department
@@ -90,7 +90,7 @@ class ScheduleContainer():
             self.departments.append(new_department)
 
 
-    def bind_schedual(self):
+    def bind_schedule(self):
         for i in range(len(self.employees)):
             if len(self.employees[i].bind_period) == 0:
                 continue
@@ -102,11 +102,11 @@ class ScheduleContainer():
                 for day in range((bind_day - self.format.start_day + 7) % 7, self.format.day_nums, 7):
                     e_avalible = self.__check_avalible(department_index, i, day, bind_period)
                     if e_avalible and department_index != -1:
-                        self.__schedual_fill(department_index, i, day, bind_period)
+                        self.__schedule_fill(department_index, i, day, bind_period)
                     #consider employee will go to the department not need to arrange schedule
                     elif e_avalible and department_index == -1:
-                        self.employees[i].schedual_fill(bind_name, day, bind_period)
-    def basic_schedual(self, last_month=0):
+                        self.employees[i].schedule_fill(bind_name, day, bind_period)
+    def basic_schedule(self, last_month=0):
         for i in range(len(self.employees)):
             
             department_index = self.__get_department_index(self.employees[i].start_department)
@@ -118,14 +118,14 @@ class ScheduleContainer():
                 
                 for period in range(self.format.period):
                     if self.__check_avalible(department_index, i, day, period):
-                            self.__schedual_fill(department_index, i, day, period)
+                            self.__schedule_fill(department_index, i, day, period)
     def to_excel(self, month):
         week_day_chinese = ["(日)", "(一)", "(二)", "(三)", "(四)", "(五)", "(六)"]
         data = {}
         for day in range(self.format.day_nums):
             data[f"{month}/{day + 1}"] = [week_day_chinese[(day + self.format.start_day + 7) % 7]]
             for e in self.employees:
-                data[f"{month}/{day + 1}"].append(e.schedual_one_day_output(day))
+                data[f"{month}/{day + 1}"].append(e.schedule_one_day_output(day))
         
         custom_index = ["星期"]
         for e in self.employees:

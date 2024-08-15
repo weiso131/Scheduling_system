@@ -9,7 +9,7 @@ import pandas as pd
 from flask import Flask, request, redirect, url_for, render_template, send_file 
 
 
-from scheduling import *
+from scheduling import ScheduleContainer, ScheduleFormat
 
 DEPARTMNT = 0
 EMPLOYEE = 1
@@ -20,7 +20,7 @@ month = 7
 last_month = 0 #是否接續上個月
 
 format = None
-my_schedual = None
+my_schedule = None
 
 app = Flask(__name__)
 
@@ -28,7 +28,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    global year, month, format, my_schedual
+    global year, month, format, my_schedule
     if request.method == 'GET':
         
         if os.path.exists(SAVE_PATH) == False:
@@ -42,34 +42,34 @@ def home():
         month = int(request.form['month'])
         reusable_data_path = f"{SAVE_PATH}/{request.form['reusable_data']}"
         
-        format = SchedualFormat(day_nums=calendar.monthrange(year, month)[1], period=2, \
+        format = ScheduleFormat(day_nums=calendar.monthrange(year, month)[1], period=2, \
                                 start_day=(date(year, month, 1).weekday() + 1 ) % 7, period_name=["上午", "下午"])
         format.set_manpower_in_week(week_day=6, manpower=0, period=[1])
         format.set_manpower_in_week(week_day=7, manpower=0, period=[0, 1])
 
-        my_schedual = ScheduleContainer(format)
+        my_schedule = ScheduleContainer(format)
         if request.form['reusable_data'] != "(":
-            my_schedual.load_reusable_data(reusable_data_path)
+            my_schedule.load_reusable_data(reusable_data_path)
         return redirect(url_for('show_status'))
 
 @app.route('/show_status')
 def show_status():
-    if my_schedual == None:
+    if my_schedule == None:
         return redirect(url_for('home'))
 
     global month
-    return render_template('show_status.html', employees=my_schedual.get_employee_json(), \
-                           departments=my_schedual.get_department_json(), target_class=EMPLOYEE, 
+    return render_template('show_status.html', employees=my_schedule.get_employee_json(), \
+                           departments=my_schedule.get_department_json(), target_class=EMPLOYEE, 
                            title=f"{year}年 {month}月 班表")
 
 
 @app.route('/edit/<int:target_class>/<int:id>', methods=['GET', 'POST'])
 def edit(target_class, id):
-    if my_schedual == None:
+    if my_schedule == None:
         return redirect(url_for('home'))
     if target_class == EMPLOYEE:
         if request.method == 'GET':
-            target = my_schedual.employees[id]
+            target = my_schedule.employees[id]
             origin = {'name' : target.name, 'room' : target.start_department, \
                       'hate_period' : target.hate_period_input, \
                       'personal_leave' : target.personal_leave_input, \
@@ -78,34 +78,34 @@ def edit(target_class, id):
                                    post_url=url_for('edit', target_class=target_class, id=id), \
                                     firstDayOfWeek=format.start_day, daysInMonth=format.day_nums)
         else:
-            my_schedual.employees[id] = my_schedual.set_employee_data(request.form)
+            my_schedule.employees[id] = my_schedule.set_employee_data(request.form)
             
 
     else:
         if request.method == 'GET':
-            target = my_schedual.departments[id]
+            target = my_schedule.departments[id]
             origin = {'name' : target.name,'man_power' : target.man_power_input,'rest_time' : target.rest_time_input}
             return render_template('department_form.html', title="編輯診間資訊", origin=origin, \
                                    post_url=url_for('edit', target_class=target_class, id=id))
         else:
-            my_schedual.departments[id] = my_schedual.set_department_data(request.form)
+            my_schedule.departments[id] = my_schedule.set_department_data(request.form)
 
 
     return redirect(url_for('show_status')) 
 
 @app.route('/delete/<int:target_class>/<int:id>')
 def delete(target_class, id):
-    if my_schedual == None:
+    if my_schedule == None:
         return redirect(url_for('home'))
     if target_class == EMPLOYEE:
-        my_schedual.employees.pop(id)
+        my_schedule.employees.pop(id)
     else:
-        my_schedual.departments.pop(id)
+        my_schedule.departments.pop(id)
     return redirect(url_for('show_status'))
     
 @app.route('/add_employee', methods=['GET', 'POST'])
 def add_employee():
-    if my_schedual == None:
+    if my_schedule == None:
         return redirect(url_for('home'))
     
     global year, month
@@ -115,8 +115,8 @@ def add_employee():
                                post_url=url_for('add_employee'), \
                                     firstDayOfWeek=format.start_day, daysInMonth=format.day_nums)
     else:
-        new_employee = my_schedual.set_employee_data(request.form)
-        my_schedual.employees.append(new_employee)
+        new_employee = my_schedule.set_employee_data(request.form)
+        my_schedule.employees.append(new_employee)
 
         return redirect(url_for('show_status'))
 
@@ -124,35 +124,35 @@ def add_employee():
 
 @app.route('/add_department', methods=['GET', 'POST'])
 def add_department():
-    if my_schedual == None:
+    if my_schedule == None:
         return redirect(url_for('home'))
     
     if request.method == 'GET':
         origin = {'name' : '', 'man_power' : '', 'rest_time' : ''}
         return render_template('department_form.html', origin=origin, title="新增診間")
     else:
-        new_department = my_schedual.set_department_data(request.form)
-        my_schedual.departments.append(new_department)
+        new_department = my_schedule.set_department_data(request.form)
+        my_schedule.departments.append(new_department)
         return redirect(url_for('show_status'))
 
 @app.route('/build_schedule')
 def build_schedule():
     global last_month
     last_month = (last_month + 1) % 2   
-    if my_schedual == None:
+    if my_schedule == None:
         return redirect(url_for('home'))
-    my_schedual.reload()
-    my_schedual.bind_schedual()
-    my_schedual.basic_schedual(last_month=last_month)
+    my_schedule.reload()
+    my_schedule.bind_schedule()
+    my_schedule.basic_schedule(last_month=last_month)
     return render_template("show_schedule.html", month=month, days=format.week_day_of_month(), \
-                           employees=my_schedual.get_employee_json(use_state=True), \
-                            departments=my_schedual.get_department_json(use_state=True), \
+                           employees=my_schedule.get_employee_json(use_state=True), \
+                            departments=my_schedule.get_department_json(use_state=True), \
                                 title=f"{year}年 {month}月 班表")
 
 @app.route('/to_excel')
 def to_excel():
     global year, month
-    df = my_schedual.to_excel(month)
+    df = my_schedule.to_excel(month)
     output = BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, index=True)
@@ -167,9 +167,9 @@ def save_reusable_data():
     if request.method == 'GET':
         return render_template('save_reusable_data.html')
     else:
-        if my_schedual == None:
+        if my_schedule == None:
             return redirect(url_for('home'))
-        my_schedual.save_reuseable_data(f"{SAVE_PATH}/{request.form["file_name"]}.json")
+        my_schedule.save_reuseable_data(f"{SAVE_PATH}/{request.form["file_name"]}.json")
 
         return redirect(url_for('show_status'))
 

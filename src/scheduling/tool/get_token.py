@@ -38,31 +38,18 @@ def scanf(token : str, target : str):
     return tuple(output)
 
 
-def get_personal_leave(tokens : str):
-    tokens = tokens.replace(' ', '')
-    token_list = tokens.split(',')
+def get_token(tokens : str, target : str):
+    """
+    s --> string
 
-    output = []
+    d --> day
 
-    for token in token_list:
-        if len(token) == 0:
-            continue
-        periods = token.split('~')
-        if len(periods) != 2:
-            return ""
-        
-        start = scanf(periods[0], 'd/p')
-        end = scanf(periods[1], 'd/p')
+    w --> week
 
-        if type(start) is not tuple or type(end) is not tuple:
-            return ""
-        
-        output.append(start + end)
-        
+    n --> number
     
-    return output
-
-def get_normal_token(tokens : str, target : str):
+    p --> period
+    """
     tokens = tokens.replace(' ', '')
     token_list = tokens.split(',')
 

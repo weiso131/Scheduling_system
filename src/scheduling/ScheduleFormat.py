@@ -4,7 +4,7 @@ import numpy as np
 
 
 
-class SchedualFormat():
+class ScheduleFormat():
     def __init__(self, day_nums : int, period : int, start_day : int, period_name=[]):
         """
         day_nums : the number of days the schedule will be made

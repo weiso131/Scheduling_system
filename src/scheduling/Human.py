@@ -1,12 +1,12 @@
 import copy
 
 
-from .SchedualFormat import *
+from .ScheduleFormat import *
 
 
 
 class Human():
-    def __init__(self, name : str, format : SchedualFormat):
+    def __init__(self, name : str, format : ScheduleFormat):
         self.name = name
         self.basic_format = copy.deepcopy(format)
         self.reload()
@@ -47,7 +47,7 @@ class Human():
         return self.format.manpower_in_days[day][period] > 0
 
 class Department(Human):
-    def __init__(self, name : str, format : SchedualFormat, man_power=[], rest_time=[], man_power_input="", rest_time_input=""):
+    def __init__(self, name : str, format : ScheduleFormat, man_power=[], rest_time=[], man_power_input="", rest_time_input=""):
         super().__init__(name, format)
         self.man_power = man_power
         self.rest_time = rest_time
@@ -79,7 +79,7 @@ class Department(Human):
     def set_rest_week(self, week_day : int, period : int):
         for i in range((week_day - self.format.start_day + 7) % 7, self.format.day_nums, 7):
             self.set_rest(i, [period])
-    def schedual_fill(self, fill_name : str, day : int, period : int):
+    def schedule_fill(self, fill_name : str, day : int, period : int):
         man_fill_pos = len(self.state[day][period]) - int(self.format.manpower_in_days[day][period])
         self.state[day][period][man_fill_pos] = fill_name
         self.format.manpower_in_days[day][period] -= 1
@@ -94,7 +94,7 @@ class Department(Human):
         return output
     
 class Employee(Human):
-    def __init__(self, name : str, start_department : str, format : SchedualFormat, hate_period=[], bind_period=[], personal_leave=[]):
+    def __init__(self, name : str, start_department : str, format : ScheduleFormat, hate_period=[], bind_period=[], personal_leave=[]):
         """
         hate_period : [("department_name", day, [periods, ])]
         bind_period : [("department_name", day, [periods, ])]
@@ -112,7 +112,7 @@ class Employee(Human):
         for pl in personal_leave:
             self.set_rest(pl[0], [pl[1]])
         
-    def schedual_one_day_output(self, day : int):
+    def schedule_one_day_output(self, day : int):
         employee_work = ""
         for p in range(self.format.period):
             employee_work += self.state[day][p][0]
@@ -129,7 +129,7 @@ class Employee(Human):
                              
             employee_avalible = employee_avalible and (not is_hate_period)
         return employee_avalible
-    def schedual_fill(self, fill_name : str, day : int, period : int):
+    def schedule_fill(self, fill_name : str, day : int, period : int):
         self.state[day][period][0] = fill_name
         self.format.manpower_in_days[day][period] -= 1
     def get_remark(self):
