@@ -169,7 +169,7 @@ def save_reusable_data():
     else:
         if my_schedule == None:
             return redirect(url_for('home'))
-        my_schedule.save_reuseable_data(f"{SAVE_PATH}/{request.form["file_name"]}.json")
+        my_schedule.save_reuseable_data(f"{SAVE_PATH}/{request.form['file_name']}.json")
 
         return redirect(url_for('show_status'))
 

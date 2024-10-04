@@ -166,3 +166,5 @@ src/test_calender.py
 *.xlsx
 src/templates/test.html
 reusable_data/*.json
+flask
+.history
